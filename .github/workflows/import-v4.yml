@@ -1,0 +1,34 @@
+name: Загрузка оформления Mythoria v4
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.stage/v4_go.txt'
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Распаковать обновлённые файлы
+        shell: bash
+        run: |
+          cat .stage/v4_part*.b64 | base64 -d > /tmp/mythoria-v4.tar.xz
+          tar -xJf /tmp/mythoria-v4.tar.xz -C .
+      - name: Сохранить изменения простыми коммитами
+        shell: bash
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add static/images/promo-mage.webp static/images/footer-realm.webp static/images/avatars
+          git commit -m "добавила новые изображения героев"
+          git add templates/base.html templates/index.html static/css/v4.css
+          git commit -m "обновила главную страницу и эффекты"
+          git add templates/generator.html templates/characters.html templates/detail.html characterlab/__init__.py characterlab/portraits.py static/js/app.js tests/test_web.py README.md
+          git commit -m "доработала генератор и карточки персонажей"
+          git rm -r .stage
+          git commit -m "убрала временные файлы"
+          git push origin HEAD:main
