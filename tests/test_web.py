@@ -135,3 +135,16 @@ def test_portrait_is_stable_across_preview_and_saved_profile(client, app):
     res = client.post('/characters/save',data={'csrf':token},follow_redirects=True)
     assert res.status_code == 200
     assert expected in res.get_data(as_text=True)
+
+
+
+def test_art_files_are_different(client):
+    """У первого экрана, карточки героя и футера разные иллюстрации."""
+    paths = (
+        '/static/images/hero-cover.webp',
+        '/static/images/promo-mage.webp',
+        '/static/images/footer-realm.webp',
+    )
+    pictures = [client.get(path) for path in paths]
+    assert all(response.status_code == 200 for response in pictures)
+    assert len({response.data for response in pictures}) == 3
