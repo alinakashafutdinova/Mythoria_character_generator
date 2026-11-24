@@ -1,7 +1,7 @@
 {% extends 'base.html' %}{% block title %}{{ game.title }}{% endblock %}
 {% block content %}<div class="breadcrumbs"><a href="{{ url_for('games_page') }}">← Каталог игр</a><span>/</span>{{ game.title }}</div>
 <div class="page-top stage-reveal"><p class="eyebrow">СОЗДАНИЕ ПЕРСОНАЖА</p><h1>{{ game.title }}</h1><p class="muted">{{ game.description }} Параметры формируются по упрощённой учебной модели.</p></div>
-<div class="generator-banner" style="--world-art:url('{{ url_for('static',filename='images/worlds/'+game.slug+'.svg') }}')"><span>MYTHORIA / ГЕНЕРАТОР ПЕРСОНАЖЕЙ</span></div>
+<div class="generator-banner" style="--world-art:url('{{ url_for('world_art',slug=game.slug) }}')"><span>MYTHORIA / ГЕНЕРАТОР ПЕРСОНАЖЕЙ</span></div>
 <div class="work-grid"><div class="panel"><div class="panel-heading"><span class="step">01</span><h2>Настройка генерации</h2></div>
 <form method="post" action="{{ url_for('generator',slug=game.slug) }}" class="form-stack">
 <input type="hidden" name="csrf" value="{{ csrf_token }}">

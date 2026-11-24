@@ -13,7 +13,7 @@
 <div class="spotlight-carousel" data-carousel aria-label="Подборка игровых миров">
  <button class="carousel-arrow prev" type="button" data-carousel-prev aria-label="Предыдущая игра">‹</button>
  <div class="carousel-track" data-carousel-track>
-  {% for game in games[:8] %}<a class="spotlight-card" href="{{ url_for('generator',slug=game.slug) }}"><img src="{{ url_for('static',filename='images/worlds/'+game.slug+'.svg') }}" alt="Декоративная иллюстрация мира {{ game.title }}" loading="lazy"><div class="spotlight-overlay"><span class="tag">{{ 'Настольная RPG' if game.group=='tabletop' else 'Компьютерная RPG' }}</span><h3>{{ game.title }}</h3><span class="spotlight-action">Создать героя ↗</span></div></a>{% endfor %}
+  {% for game in games[:8] %}<a class="spotlight-card" href="{{ url_for('generator',slug=game.slug) }}"><img src="{{ url_for('world_art',slug=game.slug) }}" alt="Декоративная иллюстрация мира {{ game.title }}" loading="lazy"><div class="spotlight-overlay"><span class="tag">{{ 'Настольная RPG' if game.group=='tabletop' else 'Компьютерная RPG' }}</span><h3>{{ game.title }}</h3><span class="spotlight-action">Создать героя ↗</span></div></a>{% endfor %}
  </div><button class="carousel-arrow next" type="button" data-carousel-next aria-label="Следующая игра">›</button>
 </div></section>
 <section class="section stage-reveal"><div class="section-heading"><div><p class="eyebrow">02 / ВОЗМОЖНОСТИ</p><h2>Создавайте. Сохраняйте. Исследуйте.</h2></div></div>
