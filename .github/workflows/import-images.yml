@@ -1,0 +1,27 @@
+name: Загрузка иллюстраций Mythoria
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.stage/images.b64'
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Добавить изображения в проект
+        run: |
+          base64 -d .stage/images.b64 > /tmp/mythoria-images.tar.xz
+          tar -xJf /tmp/mythoria-images.tar.xz -C .
+      - name: Сохранить иллюстрации
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add static/images/*.webp
+          git commit -m "добавила иллюстрации и портреты"
+          git rm .stage/images.b64
+          git commit -m "убрала временный архив"
+          git push origin HEAD:main
