@@ -24,7 +24,7 @@ jobs:
           git commit -m "добавила генерацию и базу данных"
           git add templates static
           git commit -m "оформила страницы и карусель"
-          git add README.md .github/workflows/windows-build.yml diagrams documentation video tools/make_documents.py tools/make_presentation.py
+          git add -A
           git commit -m "добавила схемы и инструкции"
           rm .stage/source.b64
           git add -u .stage/source.b64
