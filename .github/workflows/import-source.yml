@@ -16,6 +16,7 @@ jobs:
         run: |
           base64 -d .stage/source.b64 > /tmp/mythoria-source.tar.xz
           tar -xJf /tmp/mythoria-source.tar.xz -C .
+          rm -f .github/workflows/windows-build.yml
       - name: Сохранить исходники простыми коммитами
         run: |
           git config user.name "github-actions[bot]"
