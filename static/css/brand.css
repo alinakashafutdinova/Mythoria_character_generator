@@ -1,0 +1,14 @@
+/* Цвета, шапка и знак Mythoria по утверждённому макету */
+:root{--accent:#ff65d1;--accent2:#39e5ff;--bg:#07122b;--ink:#f4f8ff;--line:#4d80ab;--muted:#b7c8e8}
+body{background:radial-gradient(circle at 5% 42%,#b52c8a21,transparent 38%),radial-gradient(circle at 94% 28%,#00bde729,transparent 38%),linear-gradient(130deg,#040a20,#0c1b39 48%,#0a0b28)}
+.site-header{border:1px solid #6fe4ffa8;border-radius:999px;position:sticky;top:12px;margin:12px auto 0;width:min(1390px,calc(100% - 32px));background:linear-gradient(115deg,#091532de,#21152ce8 51%,#0b2c49d9);box-shadow:0 0 23px #31dcff32,0 16px 44px #050b27c9;backdrop-filter:blur(19px)}
+.header-content{width:calc(100% - 32px);min-height:63px}.brand{display:flex;align-items:center;gap:6px;color:#eff8ff;font-size:22px;letter-spacing:.08em}
+.brand-mark{width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 0 9px #48ebff87)}.brand .brand-name{color:inherit!important}
+.main-nav a.active,.main-nav a:hover{padding:9px 12px;border-radius:30px;color:#fff;background:#ce5aa75c;box-shadow:0 0 15px #fc58c36e,0 0 0 1px #fba9eb77 inset}
+.header-cta{border-color:#53eeff;color:#dcfbff;box-shadow:0 0 15px #15d2fe54;background:#0e385872}.header-cta:hover{color:#fff;box-shadow:0 0 25px #15e9ff82}
+.button.primary{background:linear-gradient(110deg,#ff68ce,#a95ade 66%,#2ce6ff);color:#fff;border:1px solid #ffaeea;box-shadow:0 0 25px #ff3faf78}
+.button.primary:hover{box-shadow:0 0 36px #ff54cdb0}
+.button.ghost{border-color:#3bebfa;box-shadow:0 0 16px #08d7ff54}.button.ghost:hover{background:#1b5e804d}
+.feature-card,.game-card,.saved-card,.panel,.metric,.cta{border-color:#66cdfc74;background:linear-gradient(130deg,#163b60aa,#222045b8);box-shadow:0 0 21px #0abfff19,0 13px 39px #02091e90}
+.feature-card:hover,.game-card:hover{border-color:#4beaff;box-shadow:0 0 26px #12ccff72}
+@media(max-width:650px){.site-header{top:8px;width:calc(100% - 20px)}.header-content{width:calc(100% - 15px)}.brand{font-size:17px}.brand-mark{width:39px;height:39px}}

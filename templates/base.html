@@ -7,11 +7,12 @@
   <link rel="icon" href="{{ url_for('static',filename='images/favicon.svg') }}" type="image/svg+xml">
   <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
   <script defer src="{{ url_for('static',filename='js/app.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/brand.css') }}">
 </head>
 <body>
   <div class="ambient-glow" aria-hidden="true"></div>
   <header class="site-header"><div class="shell header-content">
-    <a class="brand" href="{{ url_for('index') }}" aria-label="Mythoria — главная"><span class="brand-icon">✧</span> MYTH<span>ORIA</span><small>CHARACTER UNIVERSE</small></a>
+    <a class="brand" href="{{ url_for('index') }}" aria-label="Mythoria — на главную"><img class="brand-mark" src="{{ url_for('static',filename='images/mythoria-mark.svg') }}" alt="" width="48" height="48"><span class="brand-name">MYTHORIA</span></a>
     <button class="mobile-nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false">☰ <span class="sr-only">Открыть меню</span></button>
     <nav class="main-nav" id="main-nav" aria-label="Главная навигация">
       <a href="{{ url_for('index') }}" class="{% if request.endpoint=='index' %}active{% endif %}">Главная</a>
