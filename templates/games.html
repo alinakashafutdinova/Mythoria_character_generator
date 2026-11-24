@@ -1,6 +1,17 @@
-{% extends 'base.html' %}{% block title %}Каталог игр{% endblock %}
-{% block content %}<div class="page-top stage-reveal"><p class="eyebrow">16 МИРОВ · БЕСКОНЕЧНОЕ КОЛИЧЕСТВО ИСТОРИЙ</p><h1>ВЫБЕРИТЕ <em>СВОЙ МИР.</em></h1><p class="muted">Здесь собраны настольные и компьютерные RPG. Выберите игру, чтобы создать персонажа по её учебной модели.</p></div>
-<div class="tabs" role="group" aria-label="Тип игр"><button class="tab active" type="button" data-filter="all">Все игры</button><button class="tab" type="button" data-filter="tabletop">Настольные RPG</button><button class="tab" type="button" data-filter="video">Компьютерные RPG</button></div>
-<div class="game-grid">
-{% for game in games %}<article class="game-card stage-reveal" data-group="{{ game.group }}"><a class="game-cover" href="{{ url_for('generator',slug=game.slug) }}" aria-label="Выбрать {{ game.title }}"><img src="{{ url_for('world_art',slug=game.slug) }}" alt="Иллюстрация мира {{ game.title }}" loading="lazy"><span class="game-cover-label">{{ 'НАСТОЛЬНАЯ' if game.group=='tabletop' else 'КОМПЬЮТЕРНАЯ' }} RPG</span></a><div class="game-card-body"><div class="game-card-top"><span class="game-symbol">✧</span><span class="micro">{{ '%02d'|format(loop.index) }} / {{ '%02d'|format(games|length) }}</span></div><h2>{{ game.title }}</h2><p>{{ game.description }}</p><div class="card-bottom"><span class="micro">{{ game.edition }}</span><a href="{{ url_for('generator',slug=game.slug) }}" class="text-link" aria-label="Создать персонажа для {{ game.title }}">Выбрать ↗</a></div></div></article>{% endfor %}
-</div><p class="footnote">Mythoria — неофициальный учебный проект. Правила генерации адаптированы для демонстрации программирования и не заменяют официальные игровые руководства.</p>{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Каталог игр{% endblock %}
+{% block content %}
+<section class="in-world-hero in-glass in-catalog-hero my-reveal" aria-labelledby="catalog-heading"><div class="in-world-copy"><p class="in-kicker">// ШЕСТНАДЦАТЬ ИГРОВЫХ МИРОВ</p><h1 id="catalog-heading">ВЫБЕРИТЕ <em>СВОЮ ВСЕЛЕННУЮ</em></h1><p>От фэнтезийных королевств до городов будущего. Выберите ролевую игру и создайте персонажа по её учебной модели.</p><div class="in-badges"><span>◇ 8 настольных RPG</span><span>✦ 8 компьютерных RPG</span></div></div></section>
+<section class="in-catalog-controls in-glass" aria-label="Фильтрация игр">
+  <div class="in-tabs" role="group" aria-label="Тип игры"><button class="in-tab active tab" type="button" data-filter="all" aria-pressed="true">Все игры <span>16</span></button><button class="in-tab tab" type="button" data-filter="tabletop" aria-pressed="false">Настольные <span>8</span></button><button class="in-tab tab" type="button" data-filter="video" aria-pressed="false">Компьютерные <span>8</span></button></div>
+  <div class="in-catalog-search"><label for="game-search" class="sr-only">Поиск игры</label><input id="game-search" type="search" placeholder="Найдите любимую игру…" autocomplete="off" data-game-search><span aria-hidden="true">⌕</span></div>
+</section>
+<div class="in-catalog-count" aria-live="polite"><h2>ИГРОВЫЕ <em>МИРЫ</em></h2><span data-visible-count>Найдено 16 игр</span></div>
+<div class="in-catalog-grid">
+{% for game in games %}<article class="in-glass in-game-card game-card my-reveal" data-group="{{ game.group }}" data-game-title="{{ game.title|lower }}">
+  <a class="in-game-visual" href="{{ url_for('generator',slug=game.slug) }}" aria-label="Создать персонажа для {{ game.title }}"><img src="{{ url_for('static',filename='images/worlds/' + game.slug + '.webp') }}" alt="Декоративное изображение для игры {{ game.title }}" loading="lazy"><span class="in-game-label">{{ 'НАСТОЛЬНАЯ RPG' if game.group=='tabletop' else 'КОМПЬЮТЕРНАЯ RPG' }}</span><span class="in-game-arrow" aria-hidden="true">↗</span></a>
+  <div class="in-game-info"><span class="in-kicker">МИР {{ '%02d'|format(loop.index) }} / {{ '%02d'|format(games|length) }}</span><h3>{{ game.title }}</h3><p>{{ game.description }}</p><div class="in-game-bottom"><span>{{ game.edition }}</span><a href="{{ url_for('generator',slug=game.slug) }}">Создать героя →</a></div></div>
+</article>{% endfor %}</div>
+<div class="in-glass in-catalog-noresults" hidden data-game-empty><span aria-hidden="true">✧</span><h3>Игры не найдены</h3><p>Попробуйте другое название или выберите раздел «Все игры».</p></div>
+<p class="in-illustration-note">Mythoria — неофициальный учебный проект. Правила игр упрощены для демонстрации генерации персонажей. Изображения миров являются оригинальными декоративными иллюстрациями.</p>
+{% endblock %}

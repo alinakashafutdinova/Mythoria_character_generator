@@ -38,7 +38,7 @@
     <div class="my-world-track" data-carousel-track tabindex="0">
       {% for game in games %}
       <a href="{{ url_for('generator',slug=game.slug) }}" class="my-world-card {% if loop.index == 3 %}is-highlighted{% endif %}">
-        <img src="{{ url_for('world_art',slug=game.slug) }}" alt="Иллюстрация игровой атмосферы: {{ game.title }}" loading="lazy">
+        <img src="{{ url_for('static',filename='images/worlds/' + game.slug + '.webp') }}" alt="Иллюстрация игровой атмосферы: {{ game.title }}" loading="lazy">
         <span class="my-world-kind">{{ 'Настольная RPG' if game.group=='tabletop' else 'Компьютерная RPG' }}</span>
         <span class="my-world-name">{{ game.title }}</span>
       </a>

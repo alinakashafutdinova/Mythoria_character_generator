@@ -10,7 +10,7 @@ from .catalog import GAMES, BY_SLUG
 from .engine import generate,InvalidGeneration
 from . import db as database
 
-mimetypes.add_type('image/webp', '.webp')
+mimetypes.add_type("image/webp", ".webp")
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -51,7 +51,8 @@ def create_app(test_config=None):
                 session['preview']=result
             except InvalidGeneration as exc: flash(str(exc),'error')
         else: session.pop('preview',None)
-        return render_template('generator.html',game=game,result=result)
+        stat_max={r['label']:r['max_value'] for r in database.get_db().execute('''SELECT a.label,a.max_value FROM attribute_definitions a JOIN games g ON a.game_id=g.id WHERE g.slug=?''',(slug,)).fetchall()}
+        return render_template('generator.html',game=game,result=result,stat_max=stat_max)
 
     @app.post('/characters/save')
     def save():
@@ -136,10 +137,9 @@ def create_app(test_config=None):
         groups=conn.execute('SELECT g.title,COUNT(c.id) AS total FROM games g LEFT JOIN characters c ON c.game_id=g.id GROUP BY g.id ORDER BY total DESC,g.title').fetchall()
         return render_template('statistics.html',summary=summary,groups=groups)
 
-
     @app.get('/art/<slug>.svg')
     def world_art(slug):
-        """Собственные декоративные иллюстрации для каталога, без чужих игровых артов."""
+        """Авторские декоративные рисунки игровых миров без официальных артов."""
         if slug not in BY_SLUG:
             abort(404)
         colors = [
@@ -152,25 +152,24 @@ def create_app(test_config=None):
             ('#180b35','#5b2d8c','#ff85dc'),('#1d2b4c','#8a5688','#f9b9a4'),
             ('#1c2448','#5e4f9b','#c7a5d8'),('#230e31','#913b63','#f9a36a')
         ]
-        a, b, c = colors[list(BY_SLUG).index(slug) % len(colors)]
-        svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
-        <defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="{a}"/>
-        <stop offset=".63" stop-color="{b}"/><stop offset="1" stop-color="{c}"/></linearGradient>
-        <radialGradient id="light"><stop stop-color="#ffe3fb" stop-opacity=".8"/>
-        <stop offset="1" stop-color="{c}" stop-opacity="0"/></radialGradient></defs>
-        <rect width="800" height="600" fill="url(#sky)"/>
-        <circle cx="570" cy="155" r="220" fill="url(#light)"/>
-        <circle cx="568" cy="155" r="62" fill="#f9d9f0" opacity=".66"/>
-        <path d="M0 380L142 266 234 354 332 188 462 348 605 228 800 372V600H0Z" fill="{a}" opacity=".68"/>
-        <path d="M0 451L124 327 246 434 398 286 530 418 650 329 800 420V600H0Z" fill="{b}" opacity=".69"/>
-        <path d="M0 505L165 408 251 467 383 353 535 471 716 406 800 440V600H0Z" fill="{a}" opacity=".85"/>
-        <path d="M0 560Q170 500 380 554T800 536V600H0Z" fill="#111023" opacity=".83"/>
-        <g stroke="#ffddfb" stroke-opacity=".58" fill="none">
-          <circle cx="402" cy="258" r="150" stroke-dasharray="3 14"/>
-          <path d="M402 155L421 238 500 258 421 278 402 358 381 278 303 258 381 238Z"/>
-        </g></svg>'''
-        return Response(svg, mimetype='image/svg+xml',
-                        headers={'Cache-Control': 'public, max-age=86400'})
+        a,b,c=colors[list(BY_SLUG).index(slug)%len(colors)]
+        svg=f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+            <defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="{a}"/>
+              <stop offset=".63" stop-color="{b}"/><stop offset="1" stop-color="{c}"/></linearGradient>
+              <radialGradient id="light"><stop stop-color="#ffe3fb" stop-opacity=".8"/>
+              <stop offset="1" stop-color="{c}" stop-opacity="0"/></radialGradient></defs>
+            <rect width="800" height="600" fill="url(#sky)"/>
+            <circle cx="570" cy="155" r="220" fill="url(#light)"/>
+            <circle cx="568" cy="155" r="62" fill="#f9d9f0" opacity=".66"/>
+            <path d="M0 380L142 266 234 354 332 188 462 348 605 228 800 372V600H0Z" fill="{a}" opacity=".68"/>
+            <path d="M0 451L124 327 246 434 398 286 530 418 650 329 800 420V600H0Z" fill="{b}" opacity=".69"/>
+            <path d="M0 505L165 408 251 467 383 353 535 471 716 406 800 440V600H0Z" fill="{a}" opacity=".85"/>
+            <path d="M0 560Q170 500 380 554T800 536V600H0Z" fill="#111023" opacity=".83"/>
+            <g stroke="#ffddfb" stroke-opacity=".58" fill="none">
+              <circle cx="402" cy="258" r="150" stroke-dasharray="3 14"/>
+              <path d="M402 155L421 238 500 258 421 278 402 358 381 278 303 258 381 238Z"/>
+            </g></svg>'''
+        return Response(svg,mimetype='image/svg+xml',headers={'Cache-Control':'public, max-age=86400'})
 
     @app.get('/help')
     def help_page(): return render_template('help.html')

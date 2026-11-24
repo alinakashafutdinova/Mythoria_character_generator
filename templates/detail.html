@@ -1,8 +1,22 @@
-{% extends 'base.html' %}{% block title %}{{ item.name }}{% endblock %}
-{% block content %}<div class="breadcrumbs"><a href="{{ url_for('characters') }}">← Мои персонажи</a><span>/</span>{{ item.name }}</div>
-<div class="detail-layout"><div class="panel profile"><div class="profile-mark">✦</div><p class="eyebrow">КАРТОЧКА ПЕРСОНАЖА</p><h1>{{ item.name }}</h1><p class="muted">{{ item.game_title }}</p><div class="pill-row"><span class="tag">{{ item.origin }}</span><span class="tag">{{ item.role }}</span><span class="tag">Уровень {{ item.level }}</span></div><p class="character-bio">{{ item.bio }}</p><p class="micro">Умения: {{ skills|map(attribute="label")|join(", ") }}</p>
-<div class="actions"><a class="button secondary" href="{{ url_for('edit',cid=item.id) }}">✎ Редактировать</a><a class="button secondary" href="{{ url_for('export',cid=item.id) }}">⇩ JSON</a><button class="button secondary" type="button" onclick="window.print()">⎙ Печать / PDF</button></div>
-<div class="actions"><form method="post" action="{{ url_for('favorite',cid=item.id) }}"><input type="hidden" name="csrf" value="{{ csrf_token }}"><button class="button ghost" type="submit">{{ '♥ Убрать из избранного' if item.favorite else '♡ В избранное' }}</button></form>
-<form method="post" action="{{ url_for('delete',cid=item.id) }}" data-confirm="Вы действительно хотите удалить персонажа? Это нельзя отменить."><input type="hidden" name="csrf" value="{{ csrf_token }}"><button class="button danger" type="submit">Удалить</button></form></div></div>
-<div class="panel"><div class="panel-heading"><span class="step">✦</span><h2>Характеристики</h2></div><div class="stats-grid">{% for stat in stats %}<div class="stat"><span>{{ stat.label }}</span><strong>{{ stat.value }}</strong></div>{% endfor %}</div><p class="footnote">Характеристики представлены по упрощённой учебной модели соответствующей игры.</p></div></div>
+{% extends 'base.html' %}
+{% block title %}{{ item.name }} · персонаж{% endblock %}
+{% block content %}
+<nav class="breadcrumbs in-breadcrumbs" aria-label="Навигация"><a href="{{ url_for('characters') }}">Мои персонажи</a><span aria-hidden="true">/</span><span>{{ item.name }}</span></nav>
+<section class="in-glass in-profile-hero my-reveal" aria-labelledby="profile-name">
+  <div class="in-profile-scene" style="--in-world:url('{{ url_for('static',filename='images/worlds/' + item.game_slug + '.webp') }}')" aria-hidden="true"></div>
+  <div class="in-profile-copy"><span class="in-badge">✦ СОХРАНЁННЫЙ ПЕРСОНАЖ</span><h1 id="profile-name">{{ item.name }}</h1><p class="in-profile-sub">{{ item.game_title }} · {{ item.origin }} · {{ item.role }}</p><span class="in-level-tag">Уровень {{ item.level }}</span><p class="in-profile-description">{{ item.bio }}</p>
+    <div class="in-profile-actions"><a class="in-btn in-btn-bright" href="{{ url_for('edit',cid=item.id) }}">✎ Редактировать</a><a class="in-btn in-btn-outline" href="{{ url_for('export',cid=item.id) }}">⇩ Скачать JSON</a><button class="in-btn in-btn-outline" type="button" onclick="window.print()">⎙ Печать / PDF</button></div>
+  </div>
+  <div class="in-profile-art"><img src="{{ url_for('static',filename='images/portrait-ariel.webp' if item.id % 2 == 0 else 'images/portrait-kaydren.webp') }}" alt="Декоративная иллюстрация героя" loading="eager"></div>
+</section>
+<section class="in-profile-grid">
+  <article class="in-glass in-profile-stats my-reveal"><div class="in-panel-head"><span class="in-step">◈</span><div><p class="in-kicker">СПОСОБНОСТИ ГЕРОЯ</p><h2>Характеристики</h2></div></div>
+    <div class="in-stat-list">{% for stat in stats %}<div class="in-stat-row"><span>{{ stat.label }}</span><div class="in-stat-track"><i class="in-stat-fill" style="--in-fill:{{ (100 * stat.value / stat.max_value)|round(2) }}%"></i></div><strong>{{ stat.value }}</strong></div>{% endfor %}</div>
+    <p class="in-illustration-note">Показатели рассчитаны по учебной модели игры {{ item.game_title }}.</p></article>
+  <article class="in-glass in-profile-skills my-reveal"><div class="in-panel-head"><span class="in-step in-step-cyan">✧</span><div><p class="in-kicker">ВАШИ ВОЗМОЖНОСТИ</p><h2>Умения и действия</h2></div></div>
+    <div class="in-skill-cards">{% for skill in skills %}<div class="in-skill-card"><div aria-hidden="true">✦</div><span>{{ skill.label }}</span></div>{% else %}<p class="in-hint">Для этого персонажа пока нет назначенных умений.</p>{% endfor %}</div>
+    <div class="in-manage"><form method="post" action="{{ url_for('favorite',cid=item.id) }}"><input type="hidden" name="csrf" value="{{ csrf_token }}"><button class="in-btn in-btn-outline" type="submit">{{ '♥ Убрать из избранного' if item.favorite else '♡ Добавить в избранное' }}</button></form><form method="post" action="{{ url_for('delete',cid=item.id) }}" data-confirm="Вы действительно хотите удалить персонажа? Это действие нельзя отменить."><input type="hidden" name="csrf" value="{{ csrf_token }}"><button class="in-btn in-btn-danger" type="submit">Удалить персонажа</button></form></div>
+  </article>
+</section>
+<p class="in-illustration-note in-bottom-disclaimer">Портрет используется для оформления и не означает, что приложение генерирует внешность персонажа.</p>
 {% endblock %}
