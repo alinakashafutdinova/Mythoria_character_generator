@@ -47,7 +47,7 @@ def test_csrf(client):
 def test_queries(app):
     with app.app_context():
         db=database.get_db()
-        assert db.execute('SELECT count(*) FROM games').fetchone()[0]==10
+        assert db.execute('SELECT count(*) FROM games').fetchone()[0]==16
         sql=(database.ROOT/'database'/'queries.sql').read_text(encoding='utf-8')
         for chunk in sql.split(';'):
             if chunk.strip(): db.execute(chunk).fetchall()
