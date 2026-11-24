@@ -2,7 +2,7 @@
 {% block title %}Генератор персонажей для RPG{% endblock %}
 {% block content %}
 <section class="my-hero" aria-labelledby="my-hero-title">
-  <div class="my-hero-scene" aria-hidden="true"></div>
+  <div class="my-hero-scene" aria-hidden="true"></div><div class="v4-hero-runes" aria-hidden="true"><i></i><i></i></div>
   <div class="my-stardust" data-stardust aria-hidden="true"></div>
   <div class="shell my-hero-body">
     <div class="my-hero-content my-reveal">
@@ -19,11 +19,11 @@
 </section>
 
 <section class="shell my-promo my-reveal" aria-labelledby="promo-title" data-tilt>
-  <div class="my-promo-art" aria-hidden="true"></div>
+  <div class="my-promo-art" aria-hidden="true"></div><div class="v4-promo-sparkles" aria-hidden="true">✧ ✦ ✧</div>
   <div class="my-promo-copy">
     <span class="my-pill">✦ ОБРАЗ ПЕРСОНАЖА</span>
-    <h2 id="promo-title">АРИЭЛЬ</h2>
-    <p>Проводница звёзд, владеющая магией небесных потоков. Создайте своего героя и придумайте ему собственную историю.</p>
+    <h2 id="promo-title">ВЕЙРА</h2>
+    <p>Чародейка сумеречных дорог, управляющая магическими вихрями. Создайте своего героя и придумайте ему собственную историю.</p>
     <a class="my-button my-button-cyan my-button-small" href="{{ url_for('generator',slug='bg3') }}">Создать своего героя <span aria-hidden="true">↗</span></a>
   </div>
   <div class="my-promo-stats" aria-label="Пример характеристик образа">
@@ -92,5 +92,5 @@
   </div>
 </section>
 
-<section class="my-bottom-banner"><div class="shell"><div class="my-bottom-content my-reveal"><p class="my-kicker">ВАШЕ ПРИКЛЮЧЕНИЕ НАЧИНАЕТСЯ ЗДЕСЬ</p><h2>СОЗДАЙТЕ СВОЮ <em>ИСТОРИЮ</em></h2><p>Выберите игровую систему и создайте своего первого персонажа.</p><a class="my-button my-button-pink" href="{{ url_for('games_page') }}">Начать генерацию <span aria-hidden="true">→</span></a></div></div></section>
+<section class="my-bottom-banner"><div class="v4-bottom-shimmer" aria-hidden="true"></div><div class="shell"><div class="my-bottom-content my-reveal"><p class="my-kicker">ВАШЕ ПРИКЛЮЧЕНИЕ НАЧИНАЕТСЯ ЗДЕСЬ</p><h2>СОЗДАЙТЕ СВОЮ <em>ИСТОРИЮ</em></h2><p>Выберите игровую систему и создайте своего первого персонажа.</p><a class="my-button my-button-pink" href="{{ url_for('games_page') }}">Начать генерацию <span aria-hidden="true">→</span></a></div></div></section>
 {% endblock %}

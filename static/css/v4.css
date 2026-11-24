@@ -1,0 +1,70 @@
+/* Mythoria v4: арт, магические переходы, световые эффекты и адаптивность. */
+:root{--v4-cyan:#36eaff;--v4-pink:#ff5acb;--v4-blue:#67a5ff;--v4-glass:#071938cf}
+/* На первом экране — основное изображение; промо и нижний блок используют разные картины. */
+.my-promo-art{background-image:url('../images/promo-mage.webp');background-position:center 24%;filter:saturate(1.15) contrast(1.03)}
+.my-promo::after{background:linear-gradient(90deg,#071632f9 0%,#092047db 24%,#0b1b3d4d 54%,#07122c8e 100%)}
+.my-promo-copy{max-width:375px;text-shadow:0 2px 15px #020923eb}
+.my-promo-stats{box-shadow:0 0 22px #5ddaff3a,inset 0 0 24px #83dfff17}
+.v4-promo-sparkles{position:absolute;right:36%;top:13%;color:#edc5ff;z-index:1;letter-spacing:30px;font-size:21px;text-shadow:0 0 20px #ff36d9;animation:v4-stars 5s ease-in-out infinite alternate;pointer-events:none}
+.my-bottom-banner{background-image:linear-gradient(0deg,#050d29bd,#061b37a3 35%,#0a1b36c9 98%),url('../images/footer-realm.webp');background-position:center,center 57%;min-height:370px;display:grid;align-items:center}
+.my-footer{background-image:linear-gradient(90deg,#020b1ef5,#071935eb,#020c20ef),url('../images/footer-realm.webp');background-position:center,center bottom;background-size:cover;position:relative}
+.v4-bottom-shimmer{position:absolute;inset:0;pointer-events:none;background:linear-gradient(102deg,transparent 25%,#b864f51a 39%,#22e2ff28 51%,transparent 66%);background-size:220% 100%;animation:v4-shimmer 11s ease-in-out infinite}
+/* Магические орбиты и цветовые пятна, без нагрузки на прокрутку */
+.v4-page-orbs{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.v4-page-orbs i{position:absolute;display:block;border-radius:50%;filter:blur(85px);opacity:.16;will-change:transform}
+.v4-page-orbs i:nth-child(1){width:30vw;height:30vw;left:-17vw;top:32%;background:#fa38bd;animation:v4-drift 23s ease-in-out infinite alternate}
+.v4-page-orbs i:nth-child(2){width:35vw;height:35vw;right:-19vw;top:5%;background:#21c9ff;animation:v4-drift 28s ease-in-out infinite alternate-reverse}
+.v4-page-orbs i:nth-child(3){width:19vw;height:19vw;right:22%;bottom:-13vw;background:#8f6cff;animation:v4-drift 17s ease-in-out infinite alternate}
+.v4-hero-runes{position:absolute;pointer-events:none;right:17%;top:12%;width:min(33vw,460px);aspect-ratio:1;z-index:0;opacity:.5;mix-blend-mode:screen}
+.v4-hero-runes i{position:absolute;inset:0;border:1px dashed #4deaff6e;border-radius:50%;box-shadow:0 0 30px #09deff2b,inset 0 0 15px #e559ff18;animation:v4-orbit 46s linear infinite}
+.v4-hero-runes i:nth-child(2){inset:17%;border:1px dotted #f96bdb9c;animation-direction:reverse;animation-duration:31s}
+/* Блеск проходит по большим кнопкам, особенно на тёмном фоне. */
+.my-button,.in-btn,.header-cta{position:relative;overflow:hidden;isolation:isolate}
+.my-button::after,.in-btn::after,.header-cta::after{content:"";position:absolute;inset:-35% -65%;pointer-events:none;background:linear-gradient(110deg,transparent 42%,#ffffff50 50%,transparent 58%);transform:translateX(-105%) skewX(-13deg);transition:transform .7s ease}
+.my-button:hover::after,.in-btn:hover::after,.header-cta:hover::after{transform:translateX(105%) skewX(-13deg)}
+.my-button:focus-visible,.in-btn:focus-visible,.my-round-arrow:focus-visible,.in-tab:focus-visible{outline:3px solid #8df8ff;outline-offset:4px}
+/* Реакция карточек на положение указателя и мягкий свет на бордюрах. */
+.my-world-card,.in-game-card,.in-hero-card,.my-feature,.in-skill-card{transform-style:preserve-3d;isolation:isolate}
+.my-world-card::after,.in-game-card::after,.in-hero-card::after,.my-feature::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;background:radial-gradient(250px circle at var(--v4-pointer-x,50%) var(--v4-pointer-y,50%),#a9ebff20,transparent 62%);opacity:0;transition:opacity .3s}
+.my-world-card:hover::after,.in-game-card:hover::after,.in-hero-card:hover::after,.my-feature:hover::after{opacity:1}
+.in-hero-card:hover,.in-game-card:hover{border-color:#94eeffb4;box-shadow:0 15px 55px #02051ead,0 0 20px #42dfff39,0 0 15px #ff60d02d}
+.my-world-card img,.in-game-card img{transform-origin:50% 50%;will-change:transform}
+.my-world-card:hover img{transform:scale(1.08)}
+/* Встроенные иллюстрации героев — тематические и не повторяют один портрет для всех игр. */
+.in-card-visual::before,.in-result-portrait::before,.in-profile-art::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(130deg,#12e7ff21,transparent 28%,transparent 65%,#ff55d521);z-index:1;mix-blend-mode:screen}
+.in-result-portrait img,.in-card-visual img,.in-profile-art img{object-position:center 28%;transition:transform .75s cubic-bezier(.22,1,.36,1),filter .65s}
+.in-hero-card:hover img,.in-result-portrait:hover img,.in-profile-art:hover img{transform:scale(1.05);filter:saturate(1.13)}
+.in-result-portrait .v4-portrait-rune{position:absolute;z-index:3;right:12px;top:6px;color:#bcf9ff;font-size:29px;text-shadow:0 0 10px #21dfff,0 0 21px #ff5edd;animation:v4-stars 3s ease-in-out infinite}
+.in-result.is-conjured{animation:v4-materialize .75s cubic-bezier(.24,.74,.23,1) both}
+.in-result.is-conjured .in-result-portrait{animation:v4-portrait-arrive 1s cubic-bezier(.22,.8,.33,1) both}
+.in-result.is-conjured .in-stat-fill{animation:v4-meter-load 1.1s cubic-bezier(.22,1,.36,1) both}
+.in-result.is-conjured .in-skill-pills span{animation:v4-materialize .8s ease both}
+.in-result.is-conjured .in-skill-pills span:nth-child(2){animation-delay:.12s}
+.in-result.is-conjured .in-skill-pills span:nth-child(3){animation-delay:.24s}
+/* Облако частиц при создании персонажа: DOM появляется только на время запроса. */
+.v4-portal-overlay{position:fixed;inset:0;z-index:999;display:grid;place-items:center;background:radial-gradient(circle at 50% 47%,#123e71df 0%,#061b40ea 35%,#03071cf5 100%);backdrop-filter:blur(24px);animation:v4-portal-in .25s ease both}
+.v4-portal-core{position:relative;width:min(86vw,380px);aspect-ratio:1;display:grid;place-items:center}
+.v4-portal-core::before,.v4-portal-core::after{content:"";position:absolute;inset:7%;border:3px solid #6df5ff;box-shadow:0 0 26px #2eeaff,0 0 70px #0ac9ff6c,inset 0 0 22px #00eeff70;border-radius:50%;animation:v4-orbit 3.7s linear infinite}
+.v4-portal-core::after{inset:20%;border:2px dashed #ff7fdf;box-shadow:0 0 30px #ff34ba9b;animation-duration:2.4s;animation-direction:reverse}
+.v4-portal-icon{font-size:clamp(72px,16vw,130px);font-weight:600;color:#e2faff;filter:drop-shadow(0 0 16px #78dfff) drop-shadow(0 0 33px #ff42e5);animation:v4-pulse 1.5s ease-in-out infinite}
+.v4-portal-caption{position:absolute;top:88%;left:-30%;right:-30%;text-align:center;font-size:clamp(12px,3vw,17px);font-weight:750;letter-spacing:.15em;color:#e7faff;text-shadow:0 0 18px #64f4ff}
+.v4-portal-particle{position:absolute;left:50%;top:50%;width:5px;height:5px;border-radius:50%;background:#dffcff;box-shadow:0 0 12px 4px #fe52e8;transform:rotate(var(--angle)) translateX(var(--radius));animation:v4-particle-pulse var(--speed) ease-in-out infinite alternate;animation-delay:var(--delay)}
+.v4-portal-overlay.is-finished{animation:v4-portal-out .35s ease both;pointer-events:none}
+/* Свой фон для нижнего экрана и небольшое движение лунного света */
+.my-bottom-banner::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 75%,#00eeff25,transparent 58%);pointer-events:none;animation:v4-stars 6s ease-in-out infinite alternate}
+.my-promo:focus-within{border-color:#84e5ff}
+@keyframes v4-orbit{to{transform:rotate(360deg)}}
+@keyframes v4-stars{0%{opacity:.42;filter:brightness(.85)}100%{opacity:1;filter:brightness(1.4)}}
+@keyframes v4-drift{to{transform:translate3d(6vw,-4vh,0) scale(1.15)}}
+@keyframes v4-pulse{50%{transform:scale(1.13);filter:drop-shadow(0 0 25px #7eedff) drop-shadow(0 0 55px #ff4acd)}}
+@keyframes v4-shimmer{0%,15%{background-position:125% 0}80%,100%{background-position:-125% 0}}
+@keyframes v4-portal-in{from{opacity:0}to{opacity:1}}
+@keyframes v4-portal-out{from{opacity:1}to{opacity:0}}
+@keyframes v4-materialize{from{opacity:0;filter:blur(10px);transform:translateY(16px)}to{opacity:1;filter:blur(0);transform:translateY(0)}}
+@keyframes v4-portrait-arrive{from{opacity:.12;transform:scale(.86);filter:blur(17px) hue-rotate(38deg)}to{opacity:1;transform:scale(1);filter:blur(0) hue-rotate(0)}}
+@keyframes v4-meter-load{from{transform:scaleX(.02);transform-origin:left}to{transform:scaleX(1);transform-origin:left}}
+@keyframes v4-particle-pulse{to{opacity:.1;transform:rotate(var(--angle)) translateX(calc(var(--radius) + 25px)) scale(.3)}}
+@media(max-width:800px){.v4-hero-runes{display:none}.my-promo-art{background-position:72% center}.my-bottom-banner{min-height:330px}}
+@media(max-width:620px){.my-promo-art{background-position:70% center}.my-promo::after{background:linear-gradient(90deg,#081633fa 0%,#081b3ee3 36%,#09254630 100%)}.my-promo-copy{max-width:67%;padding:18px}.my-promo-copy p{font-size:11px;line-height:1.45}.my-footer{background-size:cover}.v4-portal-caption{letter-spacing:.07em}}
+@media(prefers-reduced-motion:reduce){.v4-page-orbs i,.v4-hero-runes i,.v4-promo-sparkles,.v4-bottom-shimmer,.my-bottom-banner::before,.in-result.is-conjured,.in-result.is-conjured .in-result-portrait,.in-result.is-conjured .in-stat-fill,.in-result.is-conjured .in-skill-pills span,.v4-portrait-rune,.v4-portal-icon,.v4-portal-core::before,.v4-portal-core::after,.v4-portal-particle{animation:none!important}.my-button::after,.in-btn::after,.header-cta::after{display:none}.v4-portal-overlay{animation:none}}
+@media print{.v4-page-orbs,.v4-hero-runes,.v4-promo-sparkles,.v4-portal-overlay,.v4-bottom-shimmer{display:none!important}.my-bottom-banner,.my-footer{background-image:none!important}}
