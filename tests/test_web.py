@@ -51,3 +51,27 @@ def test_queries(app):
         sql=(database.ROOT/'database'/'queries.sql').read_text(encoding='utf-8')
         for chunk in sql.split(';'):
             if chunk.strip(): db.execute(chunk).fetchall()
+
+
+def test_new_design_is_available(client):
+    response = client.get('/')
+    assert response.status_code == 200
+    assert 'СОЗДАВАЙТЕ' in response.get_data(as_text=True)
+    assert 'portrait-kaydren.webp' in response.get_data(as_text=True)
+    for url, mime in [
+        ('/static/css/design.css', 'text/css'),
+        ('/static/js/app.js', 'javascript'),
+        ('/static/images/hero-cover.webp', 'image/webp'),
+        ('/static/images/promo-cover.webp', 'image/webp'),
+        ('/static/images/mythoria-mark.svg', 'image/svg+xml'),
+    ]:
+        asset = client.get(url)
+        assert asset.status_code == 200, url
+        assert mime in asset.content_type
+
+
+def test_art_for_game_is_available(client):
+    art = client.get('/art/dnd.svg')
+    assert art.status_code == 200
+    assert 'svg' in art.content_type
+    assert client.get('/art/not-a-game.svg').status_code == 404
