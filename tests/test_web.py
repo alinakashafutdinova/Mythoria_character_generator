@@ -75,3 +75,33 @@ def test_art_for_game_is_available(client):
     assert art.status_code == 200
     assert 'svg' in art.content_type
     assert client.get('/art/not-a-game.svg').status_code == 404
+
+
+def test_inner_pages_use_new_design(client):
+    """Внутренние страницы используют общий стиль Mythoria."""
+    catalog = client.get('/games').get_data(as_text=True)
+    assert 'in-catalog-grid' in catalog
+    assert 'data-game-search' in catalog
+    generator = client.get('/generate/dnd').get_data(as_text=True)
+    assert 'in-builder' in generator
+    assert 'level-range' in generator
+    collection = client.get('/characters').get_data(as_text=True)
+    assert 'in-collection-hero' in collection
+    assert client.get('/static/css/interiors.css').status_code == 200
+
+
+def test_generator_bars_and_saved_profile(client, app):
+    """Карточка генерируется из настоящих характеристик и сохранения в SQLite."""
+    client.get('/generate/dnd')
+    token = csrf(client)
+    res = client.post('/generate/dnd', data={'csrf':token,'origin':'Эльф','role':'Воин','level':'3'})
+    assert res.status_code == 200
+    assert 'in-stat-fill' in res.get_data(as_text=True)
+    client.post('/characters/save',data={'csrf':token})
+    with app.app_context():
+        cid = database.get_db().execute('SELECT id FROM characters ORDER BY id DESC').fetchone()['id']
+    detail_html = client.get(f'/characters/{cid}').get_data(as_text=True)
+    assert 'in-profile-hero' in detail_html
+    assert 'in-stat-fill' in detail_html
+    assert 'in-skill-card' in detail_html
+    assert 'in-profile-actions' in detail_html

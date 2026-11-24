@@ -220,3 +220,73 @@ if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').mat
     el.addEventListener('pointerleave', () => el.style.transform = '');
   }
 }
+
+// Внутренние страницы: поиск по игровым мирам и подсчёт найденных карточек.
+const gameSearch = document.querySelector('[data-game-search]');
+if (gameSearch) {
+  const cards = [...document.querySelectorAll('.in-game-card[data-game-title]')];
+  const tabs = [...document.querySelectorAll('.in-tabs [data-filter]')];
+  const count = document.querySelector('[data-visible-count]');
+  const empty = document.querySelector('[data-game-empty]');
+  const updateCards = () => {
+    const query = gameSearch.value.trim().toLocaleLowerCase('ru');
+    const selected = tabs.find(tab => tab.classList.contains('active'))?.dataset.filter || 'all';
+    let visible = 0;
+    for (const card of cards) {
+      const fitsName = card.dataset.gameTitle.toLocaleLowerCase('ru').includes(query);
+      const fitsType = selected === 'all' || selected === card.dataset.group;
+      card.hidden = !(fitsName && fitsType);
+      if (!card.hidden) visible++;
+    }
+    if (count) count.textContent = `Найдено игр: ${visible}`;
+    if (empty) empty.hidden = visible !== 0;
+  };
+  gameSearch.addEventListener('input', updateCards);
+  for (const tab of tabs) tab.addEventListener('click', updateCards);
+  updateCards();
+}
+
+// Два способа задать уровень: поле и ползунок должны совпадать.
+const levelField = document.querySelector('#level');
+const levelRange = document.querySelector('#level-range');
+if (levelField && levelRange) {
+  levelRange.addEventListener('input', () => { levelField.value = levelRange.value; });
+  levelField.addEventListener('input', () => {
+    const level = Number(levelField.value);
+    if (Number.isFinite(level) && level >= Number(levelField.min) && level <= Number(levelField.max)) {
+      levelRange.value = String(level);
+    }
+  });
+}
+
+// Кнопка выбора случайной комбинации в форме генератора.
+const randomSetup = document.querySelector('[data-random-setup]');
+if (randomSetup) {
+  randomSetup.addEventListener('click', () => {
+    for (const select of document.querySelectorAll('#generation-form select')) {
+      const values = [...select.options].filter(option => option.value);
+      if (values.length) select.value = values[Math.floor(Math.random() * values.length)].value;
+    }
+    const level = document.querySelector('#level');
+    if (level && levelRange) {
+      level.value = String(1 + Math.floor(Math.random() * Math.min(Number(level.max), 20)));
+      levelRange.value = level.value;
+    }
+    randomSetup.animate?.([
+      {transform: 'scale(1)'}, {transform: 'scale(.97)'}, {transform: 'scale(1)'}
+    ], {duration: 280, easing: 'ease-out'});
+  });
+}
+
+// Полосы характеристик отображают действительные значения БД/генератора.
+if (!reduceMotion && 'IntersectionObserver' in window) {
+  const statObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-ready');
+        statObserver.unobserve(entry.target);
+      }
+    }
+  }, {threshold: .16});
+  for (const bar of document.querySelectorAll('.in-stat-fill')) statObserver.observe(bar);
+}
