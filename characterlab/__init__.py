@@ -2,12 +2,15 @@
 import os
 import secrets
 import json
+import mimetypes
 from pathlib import Path
 from functools import wraps
 from flask import Flask,render_template,request,redirect,url_for,flash,abort,session,g,Response
 from .catalog import GAMES, BY_SLUG
 from .engine import generate,InvalidGeneration
 from . import db as database
+
+mimetypes.add_type('image/webp', '.webp')
 
 ROOT=Path(__file__).resolve().parents[1]
 
