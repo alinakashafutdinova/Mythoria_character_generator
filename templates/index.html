@@ -1,29 +1,96 @@
-{% extends 'base.html' %}{% block title %}Главная{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Генератор персонажей для RPG{% endblock %}
 {% block content %}
-<section class="hero stage-reveal">
-  <div class="hero-copy"><p class="eyebrow"><span class="eyebrow-line"></span> ВСЕЛЕННАЯ ВАШИХ ИСТОРИЙ</p>
-    <h1>МИРЫ ЖДУТ<br><em>СВОЕГО ГЕРОЯ.</em></h1>
-    <p class="lead">Выберите любимую ролевую игру, создайте уникального персонажа и сохраните его историю. Каждый новый герой — начало нового приключения.</p>
-    <div class="button-row"><a class="button primary" href="{{ url_for('games_page') }}">Создать персонажа <span aria-hidden="true">↗</span></a><a class="button ghost" href="{{ url_for('characters') }}">Моя коллекция <span aria-hidden="true">⌁</span></a></div>
-    <div class="hero-metrics"><div><strong>{{ games|length|string|e }}</strong><span>игровых миров</span></div><div><strong>02</strong><span>направления RPG</span></div><div><strong>{{ count }}</strong><span>ваших персонажей</span></div></div>
+<section class="my-hero" aria-labelledby="my-hero-title">
+  <div class="my-hero-scene" aria-hidden="true"></div>
+  <div class="my-stardust" data-stardust aria-hidden="true"></div>
+  <div class="shell my-hero-body">
+    <div class="my-hero-content my-reveal">
+      <p class="my-kicker"><span></span> ГЕНЕРАТОР ПЕРСОНАЖЕЙ MYTHORIA <span></span></p>
+      <h1 id="my-hero-title">СОЗДАВАЙТЕ<br>УНИКАЛЬНЫХ<br><em>ГЕРОЕВ ДЛЯ RPG</em></h1>
+      <p class="my-hero-lead">Выберите любимую настольную или компьютерную ролевую игру, настройте параметры и создайте персонажа для своей истории.</p>
+      <div class="my-actions">
+        <a class="my-button my-button-pink" href="{{ url_for('games_page') }}"><span aria-hidden="true">✧</span> Создать персонажа <span aria-hidden="true">→</span></a>
+        <a class="my-button my-button-cyan" href="#features"><span aria-hidden="true">◇</span> Узнать возможности <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="my-hero-counter"><strong>{{ games|length }}</strong> игровых систем <span aria-hidden="true">✦</span> <strong>2</strong> типа RPG <span aria-hidden="true">✦</span> <strong>{{ count }}</strong> сохранённых героев</div>
+    </div>
   </div>
-  <div class="hero-art" aria-label="Декоративная иллюстрация сказочного мира"><div class="hero-scenery"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="rune rune-a">✧</div><div class="rune rune-b">✦</div><div class="art-caption">THE STORY IS YOURS <span>✧</span> MYTHORIA</div></div>
 </section>
-<section class="my-promo-card stage-reveal" aria-labelledby="promo-name">
-  <div class="my-promo-info"><span class="tag">✧ ПРИМЕР ПЕРСОНАЖА</span><h2 id="promo-name">АРИЭЛЬ</h2>
-  <p>Проводница звёзд и хранительница магических путей. Создайте своего героя и придумайте ему историю.</p>
-  <a class="button primary" href="{{ url_for('generator',slug='bg3') }}">Создать своего персонажа ↗</a></div>
-  <div class="my-promo-stats"><span>✧ Класс: Маг</span><span>◇ Роль: Поддержка</span><span>✦ Мир: Фэнтези</span></div>
+
+<section class="shell my-promo my-reveal" aria-labelledby="promo-title" data-tilt>
+  <div class="my-promo-art" aria-hidden="true"></div>
+  <div class="my-promo-copy">
+    <span class="my-pill">✦ ОБРАЗ ПЕРСОНАЖА</span>
+    <h2 id="promo-title">АРИЭЛЬ</h2>
+    <p>Проводница звёзд, владеющая магией небесных потоков. Создайте своего героя и придумайте ему собственную историю.</p>
+    <a class="my-button my-button-cyan my-button-small" href="{{ url_for('generator',slug='bg3') }}">Создать своего героя <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="my-promo-stats" aria-label="Пример характеристик образа">
+    <span>✧ Класс: <b>Маг</b></span><span>◈ Роль: <b>Поддержка</b></span><span>✦ Стиль: <b>Фэнтези</b></span>
+  </div>
 </section>
-<section class="section stage-reveal"><div class="section-heading"><div><p class="eyebrow">01 / НАЧНИТЕ ПУТЕШЕСТВИЕ</p><h2>Выберите вселенную</h2><p class="muted">От классического фэнтези до фантастических миров будущего.</p></div><a class="text-link" href="{{ url_for('games_page') }}">Все игры ↗</a></div>
-<div class="spotlight-carousel" data-carousel aria-label="Подборка игровых миров">
- <button class="carousel-arrow prev" type="button" data-carousel-prev aria-label="Предыдущая игра">‹</button>
- <div class="carousel-track" data-carousel-track>
-  {% for game in games[:8] %}<a class="spotlight-card" href="{{ url_for('generator',slug=game.slug) }}"><img src="{{ url_for('world_art',slug=game.slug) }}" alt="Декоративная иллюстрация мира {{ game.title }}" loading="lazy"><div class="spotlight-overlay"><span class="tag">{{ 'Настольная RPG' if game.group=='tabletop' else 'Компьютерная RPG' }}</span><h3>{{ game.title }}</h3><span class="spotlight-action">Создать героя ↗</span></div></a>{% endfor %}
- </div><button class="carousel-arrow next" type="button" data-carousel-next aria-label="Следующая игра">›</button>
-</div></section>
-<section class="section stage-reveal"><div class="section-heading"><div><p class="eyebrow">02 / ВОЗМОЖНОСТИ</p><h2>Создавайте. Сохраняйте. Исследуйте.</h2></div></div>
-<div class="feature-grid"><div class="feature-card"><span class="feature-icon">✧</span><h3>Генерация персонажей</h3><p>У каждой игровой системы — свои параметры и правила. Выбирайте настройки или доверьтесь случайности.</p></div><div class="feature-card"><span class="feature-icon">❈</span><h3>Разные игровые миры</h3><p>Настольные и компьютерные RPG в одном каталоге. Начните с любимой игры и откройте новые.</p></div><div class="feature-card"><span class="feature-icon">◇</span><h3>Ваша коллекция</h3><p>Сохраняйте персонажей, редактируйте карточки, отмечайте избранное и просматривайте статистику.</p></div></div>
+
+<section class="shell my-section my-reveal" id="worlds" aria-labelledby="worlds-title">
+  <div class="my-section-heading"><div><p class="my-section-mini">// ИГРОВЫЕ ВСЕЛЕННЫЕ</p><h2 id="worlds-title">ПОДДЕРЖИВАЕМЫЕ <em>МИРЫ</em></h2></div><p>Выберите систему и создайте персонажа по её учебной модели.</p><a class="my-link" href="{{ url_for('games_page') }}">Весь каталог <span aria-hidden="true">→</span></a></div>
+  <div class="my-glass my-world-carousel" data-carousel data-autoplay="6500" aria-label="Карусель игровых миров">
+    <button class="my-round-arrow" type="button" data-carousel-prev aria-label="Предыдущие игры">‹</button>
+    <div class="my-world-track" data-carousel-track tabindex="0">
+      {% for game in games %}
+      <a href="{{ url_for('generator',slug=game.slug) }}" class="my-world-card {% if loop.index == 3 %}is-highlighted{% endif %}">
+        <img src="{{ url_for('world_art',slug=game.slug) }}" alt="Иллюстрация игровой атмосферы: {{ game.title }}" loading="lazy">
+        <span class="my-world-kind">{{ 'Настольная RPG' if game.group=='tabletop' else 'Компьютерная RPG' }}</span>
+        <span class="my-world-name">{{ game.title }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    <button class="my-round-arrow" type="button" data-carousel-next aria-label="Следующие игры">›</button>
+    <div class="my-carousel-dots" data-carousel-dots aria-label="Страницы карусели"></div>
+  </div>
 </section>
-<section class="cta stage-reveal"><div><p class="eyebrow">ВАША СЛЕДУЮЩАЯ ИСТОРИЯ</p><h2>Один персонаж. Тысяча возможных историй.</h2></div><a class="button primary" href="{{ url_for('games_page') }}">Открыть генератор ↗</a></section>
+
+<section class="shell my-section my-reveal" id="heroes" aria-labelledby="heroes-title">
+  <div class="my-section-heading"><div><p class="my-section-mini">// ВДОХНОВЕНИЕ</p><h2 id="heroes-title">ВЫБЕРИТЕ <em>ГЕРОЯ</em></h2></div><p>Познакомьтесь с образами персонажей и создайте собственного.</p></div>
+  <div class="my-glass my-heroes-panel" data-showcase>
+    <div class="my-showcase-main">
+      <div class="my-showcase-info"><p class="my-pill">ПРИМЕР ПЕРСОНАЖА</p><h3 data-hero-name>КАЙДРЕН</h3><span data-hero-role>Воин · Защитник</span><p data-hero-story>Страж пограничных земель, научившийся обращать силу магии себе на помощь.</p><a class="my-link my-showcase-link" data-hero-link href="{{ url_for('generator',slug='dnd') }}">Создать похожего персонажа <span aria-hidden="true">→</span></a></div>
+      <div class="my-coverflow-wrap">
+        <button type="button" class="my-round-arrow" data-showcase-prev aria-label="Предыдущий персонаж">‹</button>
+        <div class="my-coverflow" data-coverflow aria-label="Галерея героев">
+          <button type="button" class="my-portrait" data-hero-index="0" aria-label="Выбрать Кайдрена"><img src="{{ url_for('static',filename='images/portrait-kaydren.webp') }}" alt="Кайдрен — воин" loading="lazy"><span>КАЙДРЕН</span></button>
+          <button type="button" class="my-portrait" data-hero-index="1" aria-label="Выбрать Ариэль"><img src="{{ url_for('static',filename='images/portrait-ariel.webp') }}" alt="Ариэль — волшебница" loading="lazy"><span>АРИЭЛЬ</span></button>
+          <button type="button" class="my-portrait" data-hero-index="2" aria-label="Выбрать Одетту"><img src="{{ url_for('static',filename='images/portrait-odetta.webp') }}" alt="Одетта — заклинательница" loading="lazy"><span>ОДЕТТА</span></button>
+          <button type="button" class="my-portrait" data-hero-index="3" aria-label="Выбрать Лиру"><img src="{{ url_for('static',filename='images/portrait-lyra.webp') }}" alt="Лира — следопыт" loading="lazy"><span>ЛИРА</span></button>
+        </div>
+        <button type="button" class="my-round-arrow" data-showcase-next aria-label="Следующий персонаж">›</button>
+      </div>
+      <div class="my-showcase-abilities"><p>ПРИМЕР ХАРАКТЕРИСТИК</p><div data-hero-stats>
+        <div class="my-ability"><span>Сила</span><div><i style="width:82%"></i></div><b>82</b></div>
+        <div class="my-ability"><span>Ловкость</span><div><i style="width:68%"></i></div><b>68</b></div>
+        <div class="my-ability"><span>Магия</span><div><i style="width:71%"></i></div><b>71</b></div>
+      </div><small>Иллюстративные показатели. Реальные значения рассчитываются генератором выбранной игры.</small></div>
+    </div>
+    <div class="my-carousel-dots my-showcase-dots" data-showcase-dots aria-label="Выбор героя"></div>
+  </div>
+</section>
+
+<section class="shell my-section my-reveal" id="inside" aria-labelledby="inside-title">
+  <div class="my-section-heading"><div><p class="my-section-mini">// ПОДРОБНОСТИ ПРОЕКТА</p><h2 id="inside-title">ВНУТРИ <em>MYTHORIA</em></h2></div><p>Всё, что уже доступно в этой версии приложения.</p></div>
+  <div class="my-inside-grid">
+    <article class="my-glass my-inside-feature"><div class="my-inside-art" aria-hidden="true"></div><div><span class="my-pill">16 ИГРОВЫХ СИСТЕМ</span><h3>Разные миры, разные истории</h3><p>Выбирайте настольные или компьютерные RPG. Для каждой системы предусмотрены свои настройки генерации.</p><a class="my-button my-button-cyan my-button-small" href="{{ url_for('games_page') }}">Перейти к играм <span aria-hidden="true">→</span></a></div></article>
+    <div class="my-inside-list"><a href="{{ url_for('characters') }}" class="my-glass my-news-item"><span class="my-news-icon">◇</span><span><b>Личная коллекция</b><small>Сохраняйте и изменяйте созданных героев</small></span><span aria-hidden="true">→</span></a><a href="{{ url_for('statistics') }}" class="my-glass my-news-item"><span class="my-news-icon">▥</span><span><b>Статистика</b><small>Просматривайте данные по персонажам</small></span><span aria-hidden="true">→</span></a><a href="{{ url_for('help_page') }}" class="my-glass my-news-item"><span class="my-news-icon">✧</span><span><b>Справка</b><small>Узнайте, как пользоваться приложением</small></span><span aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<section class="shell my-section my-reveal" id="features" aria-labelledby="features-title">
+  <div class="my-section-heading"><div><p class="my-section-mini">// ВОЗМОЖНОСТИ</p><h2 id="features-title">ВОЗМОЖНОСТИ <em>MYTHORIA</em></h2></div><p>Для создания, настройки и хранения ваших персонажей.</p></div>
+  <div class="my-features-grid">
+    <article class="my-glass my-feature"><div class="my-feature-symbol">✧</div><h3>Случайная генерация</h3><p>Создавайте персонажей и получайте разные комбинации параметров.</p></article>
+    <article class="my-glass my-feature"><div class="my-feature-symbol">◇</div><h3>Гибкая настройка</h3><p>Выбирайте доступные происхождения, роли и уровни.</p></article>
+    <article class="my-glass my-feature"><div class="my-feature-symbol">▧</div><h3>Ваша коллекция</h3><p>Сохраняйте, редактируйте и отмечайте персонажей как избранные.</p></article>
+    <article class="my-glass my-feature"><div class="my-feature-symbol">◈</div><h3>Статистика</h3><p>Просматривайте распределение сохранённых персонажей по играм.</p></article>
+  </div>
+</section>
+
+<section class="my-bottom-banner"><div class="shell"><div class="my-bottom-content my-reveal"><p class="my-kicker">ВАШЕ ПРИКЛЮЧЕНИЕ НАЧИНАЕТСЯ ЗДЕСЬ</p><h2>СОЗДАЙТЕ СВОЮ <em>ИСТОРИЮ</em></h2><p>Выберите игровую систему и создайте своего первого персонажа.</p><a class="my-button my-button-pink" href="{{ url_for('games_page') }}">Начать генерацию <span aria-hidden="true">→</span></a></div></div></section>
 {% endblock %}

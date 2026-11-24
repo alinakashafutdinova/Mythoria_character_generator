@@ -1,33 +1,43 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Mythoria — генератор игровых персонажей для настольных и компьютерных RPG.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07102b">
+  <meta name="description" content="Mythoria — веб-приложение для генерации персонажей настольных и компьютерных RPG.">
   <title>{% block title %}Главная{% endblock %} · Mythoria</title>
   <link rel="icon" href="{{ url_for('static',filename='images/favicon.svg') }}" type="image/svg+xml">
   <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/design.css') }}">
   <script defer src="{{ url_for('static',filename='js/app.js') }}"></script>
-  <link rel="stylesheet" href="{{ url_for('static',filename='css/brand.css') }}">
 </head>
 <body>
   <div class="ambient-glow" aria-hidden="true"></div>
-  <header class="site-header"><div class="shell header-content">
-    <a class="brand" href="{{ url_for('index') }}" aria-label="Mythoria — на главную"><img class="brand-mark" src="{{ url_for('static',filename='images/mythoria-mark.svg') }}" alt="" width="48" height="48"><span class="brand-name">MYTHORIA</span></a>
-    <button class="mobile-nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false">☰ <span class="sr-only">Открыть меню</span></button>
-    <nav class="main-nav" id="main-nav" aria-label="Главная навигация">
-      <a href="{{ url_for('index') }}" class="{% if request.endpoint=='index' %}active{% endif %}">Главная</a>
-      <a href="{{ url_for('games_page') }}" class="{% if request.endpoint in ('games_page','generator') %}active{% endif %}">Игры</a>
-      <a href="{{ url_for('characters') }}" class="{% if request.endpoint in ('characters','detail','edit') %}active{% endif %}">Персонажи</a>
-      <a href="{{ url_for('statistics') }}" class="{% if request.endpoint=='statistics' %}active{% endif %}">Статистика</a>
-      <a href="{{ url_for('help_page') }}" class="{% if request.endpoint=='help_page' %}active{% endif %}">Справка</a>
-    </nav>
-    <a class="header-cta" href="{{ url_for('games_page') }}">Создать героя <span aria-hidden="true">↗</span></a>
-  </div></header>
-  <main class="shell main-content">
+  <header class="site-header">
+    <div class="shell header-content">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="Mythoria — на главную">
+        <img class="brand-mark" src="{{ url_for('static',filename='images/mythoria-mark.svg') }}" alt="" width="49" height="47">
+        <span class="brand-name">MYTHORIA</span>
+      </a>
+      <button class="mobile-nav-toggle" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Открыть меню">☰</button>
+      <nav class="main-nav" id="main-nav" aria-label="Главное меню">
+        <a href="{{ url_for('index') }}" class="{% if request.endpoint=='index' %}active{% endif %}">Главная</a>
+        <a href="{{ url_for('index') }}#features">Возможности</a>
+        <a href="{{ url_for('games_page') }}" class="{% if request.endpoint in ('games_page','generator') %}active{% endif %}">Каталог игр</a>
+        <a href="{{ url_for('index') }}#heroes">Галерея</a>
+        <a href="{{ url_for('characters') }}" class="{% if request.endpoint in ('characters','detail','edit') %}active{% endif %}">Персонажи</a>
+        <a href="{{ url_for('statistics') }}" class="{% if request.endpoint=='statistics' %}active{% endif %}">Статистика</a>
+        <a href="{{ url_for('help_page') }}" class="{% if request.endpoint=='help_page' %}active{% endif %}">Справка</a>
+      </nav>
+      <a class="header-cta" href="{{ url_for('characters') }}"><span aria-hidden="true">◇</span> Моя коллекция</a>
+    </div>
+  </header>
+  <main class="main-content {% if request.endpoint == 'index' %}home-main{% else %}shell interior-main{% endif %}" id="content">
     {% with notices=get_flashed_messages(with_categories=true) %}{% for category,message in notices %}
-    <div class="notice {{ category }}" role="status">{{ message }}</div>
+    <div class="notice shell {{ category }}" role="status">{{ message }}</div>
     {% endfor %}{% endwith %}
     {% block content %}{% endblock %}
   </main>
-  <footer><div class="shell footer-inner"><span>✧ MYTHORIA · курсовой проект «Генератор персонажей»</span><span>Неофициальные учебные адаптации игровых механик</span></div></footer>
-</body></html>
+  <footer class="my-footer"><div class="shell footer-inner"><span><img src="{{ url_for('static',filename='images/mythoria-mark.svg') }}" width="25" height="25" alt=""> MYTHORIA · Курсовой проект «Генератор персонажей»</span><span>Игровые механики представлены в учебной адаптации</span></div></footer>
+</body>
+</html>
