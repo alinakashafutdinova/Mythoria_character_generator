@@ -290,3 +290,83 @@ if (!reduceMotion && 'IntersectionObserver' in window) {
   }, {threshold: .16});
   for (const bar of document.querySelectorAll('.in-stat-fill')) statObserver.observe(bar);
 }
+
+// Mythoria v4: мягкое свечение следует за указателем на игровых карточках.
+if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  const glowCards = document.querySelectorAll('.my-world-card,.in-game-card,.in-hero-card,.my-feature');
+  for (const card of glowCards) {
+    card.addEventListener('pointermove', event => {
+      const bounds = card.getBoundingClientRect();
+      card.style.setProperty('--v4-pointer-x', `${(event.clientX - bounds.left).toFixed(1)}px`);
+      card.style.setProperty('--v4-pointer-y', `${(event.clientY - bounds.top).toFixed(1)}px`);
+    }, {passive:true});
+  }
+}
+
+// Магический призыв героя: POST остаётся рабочим и без JavaScript.
+// В режиме JS получаем готовый HTML с Flask и обновляем только карточку результата.
+const generationForm = document.querySelector('#generation-form');
+if (generationForm) {
+  const resultElement = () => document.querySelector('#generation-result');
+  let summoning = false;
+  const makePortal = () => {
+    const portal = document.createElement('div');
+    portal.className = 'v4-portal-overlay';
+    portal.setAttribute('role','status');
+    portal.setAttribute('aria-live','polite');
+    portal.innerHTML = `<div class="v4-portal-core"><span class="v4-portal-icon" aria-hidden="true">✧</span><span class="v4-portal-caption">СОЗДАЁМ ВАШЕГО ГЕРОЯ…</span></div>`;
+    if (!reduceMotion) {
+      const core = portal.querySelector('.v4-portal-core');
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('i');
+        p.className = 'v4-portal-particle';
+        p.style.setProperty('--angle', `${i * 12}deg`);
+        p.style.setProperty('--radius', `${76 + (i % 5) * 23}px`);
+        p.style.setProperty('--speed', `${1.8 + (i % 4) * .3}s`);
+        p.style.setProperty('--delay', `${(i % 7) * -.2}s`);
+        core.append(p);
+      }
+    }
+    document.body.append(portal);
+    return portal;
+  };
+  generationForm.addEventListener('submit', async event => {
+    if (summoning || !generationForm.reportValidity()) return;
+    event.preventDefault();
+    summoning = true;
+    const button = generationForm.querySelector('[type="submit"]');
+    if (button) button.disabled = true;
+    const portal = makePortal();
+    const started = performance.now();
+    try {
+      const response = await fetch(generationForm.action, {
+        method:'POST', body:new FormData(generationForm), credentials:'same-origin',
+        headers:{'X-Requested-With':'XMLHttpRequest'}
+      });
+      if (!response.ok) throw new Error(`Ответ сервера: ${response.status}`);
+      const documentCopy = new DOMParser().parseFromString(await response.text(),'text/html');
+      const next = documentCopy.querySelector('#generation-result');
+      if (!next || !next.querySelector('.in-result-main')) {
+        const notice = documentCopy.querySelector('.notice');
+        throw new Error(notice?.textContent?.trim() || 'Генератор не вернул персонажа.');
+      }
+      if (!reduceMotion) await new Promise(resolve => setTimeout(resolve,Math.max(0,950-(performance.now()-started))));
+      resultElement()?.replaceWith(next);
+      for (const bar of next.querySelectorAll('.in-stat-fill')) bar.classList.add('is-ready');
+      if (window.innerWidth < 850) next.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});
+    } catch (error) {
+      // На сетевых ошибках показываем причину, не удаляя пользовательские настройки.
+      const notice = document.createElement('div');
+      notice.className = 'notice error';
+      notice.setAttribute('role','alert');
+      notice.textContent = `Не удалось создать героя: ${error.message}. Попробуйте снова.`;
+      generationForm.before(notice);
+      window.setTimeout(() => notice.remove(),9000);
+    } finally {
+      portal.classList.add('is-finished');
+      window.setTimeout(() => portal.remove(),reduceMotion?0:360);
+      if (button) button.disabled = false;
+      summoning = false;
+    }
+  });
+}

@@ -20,18 +20,18 @@
     </form>
     <div class="in-note"><span aria-hidden="true">ⓘ</span> Правила генерации адаптированы для учебного проекта и не являются официальными игровыми листами.</div>
   </div>
-  <div class="in-glass in-result my-reveal" id="generation-result" aria-live="polite">
+  <div class="in-glass in-result my-reveal {% if result %}is-conjured{% endif %}" id="generation-result" aria-live="polite">
     <div class="in-panel-head"><span class="in-step in-step-cyan">02</span><div><p class="in-kicker">РЕЗУЛЬТАТ ГЕНЕРАЦИИ</p><h2>Ваш персонаж</h2></div>{% if result %}<span class="in-status">✦ Готов</span>{% endif %}</div>
     {% if result %}
-      <div class="in-result-main"><div class="in-result-portrait" aria-label="Декоративный фэнтезийный образ"><img src="{{ url_for('static',filename='images/portrait-ariel.webp' if game.group=='tabletop' else 'images/portrait-kaydren.webp') }}" alt="Фэнтезийная иллюстрация для оформления карточки" loading="eager"><span>MYTHORIA</span></div>
+      <div class="in-result-main"><div class="in-result-portrait my-portrait-art" aria-label="Тематическая иллюстрация героя"><span class="v4-portrait-rune" aria-hidden="true">✦</span><img src="{{ url_for('static',filename=portrait_for(game.slug,result.name,result.origin,result.role)) }}" alt="Иллюстрация для персонажа {{ result.name }}" loading="eager"><span>MYTHORIA</span></div>
         <div class="in-result-info"><span class="in-badge">НОВЫЙ ГЕРОЙ</span><h3>{{ result.name }}</h3><p class="in-role">{{ result.origin }} · {{ result.role }}</p><span class="in-level-tag">✦ Уровень {{ result.level }}</span><p class="in-result-bio">{{ result.bio }}</p></div></div>
       <div class="in-stat-header"><h3>Характеристики</h3><span>Значения по правилам выбранного мира</span></div>
       <div class="in-stat-list">{% for label,value in result.stats.items() %}<div class="in-stat-row"><span>{{ label }}</span><div class="in-stat-track"><i class="in-stat-fill" style="--in-fill:{{ (100 * value / stat_max[label])|round(2) }}%"></i></div><strong>{{ value }}</strong></div>{% endfor %}</div>
       <div class="in-skill-list"><h3>Умения</h3><div class="in-skill-pills">{% for skill in result.abilities %}<span>✧ {{ skill }}</span>{% endfor %}</div></div>
       <form method="post" action="{{ url_for('save') }}" class="in-save-form"><input type="hidden" name="csrf" value="{{ csrf_token }}"><button class="in-btn in-btn-bright" type="submit"><span aria-hidden="true">♡</span> Сохранить в коллекцию</button></form>
-      <p class="in-illustration-note">Иллюстрация декоративная и не отражает автоматически созданную внешность героя.</p>
+      <p class="in-illustration-note">Портрет подбирается из тематической коллекции иллюстраций. Внешность не рассчитывается по правилам игры.</p>
     {% else %}
-      <div class="in-empty-character"><div class="in-empty-image"><img src="{{ url_for('static',filename='images/portrait-kaydren.webp') }}" alt="Пример иллюстрации фэнтезийного персонажа"></div><span class="in-empty-symbol" aria-hidden="true">✧</span><h3>Ваша история начинается здесь</h3><p>Выберите параметры слева и нажмите «Сгенерировать героя». Результат появится в этой карточке.</p><span class="in-status in-status-soft">Ожидаем генерацию</span></div>
+      <div class="in-empty-character"><div class="in-empty-image"><img src="{{ url_for('static',filename=portrait_for(game.slug)) }}" alt="Пример иллюстрации фэнтезийного персонажа"></div><span class="in-empty-symbol" aria-hidden="true">✧</span><h3>Ваша история начинается здесь</h3><p>Выберите параметры слева и нажмите «Сгенерировать героя». Результат появится в этой карточке.</p><span class="in-status in-status-soft">Ожидаем генерацию</span></div>
     {% endif %}
   </div>
 </section>

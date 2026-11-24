@@ -105,3 +105,33 @@ def test_generator_bars_and_saved_profile(client, app):
     assert 'in-stat-fill' in detail_html
     assert 'in-skill-card' in detail_html
     assert 'in-profile-actions' in detail_html
+
+
+def test_character_portraits_and_new_images(client, app):
+    from characterlab.portraits import POOLS, portrait_for
+    from characterlab.catalog import BY_SLUG
+    assert set(POOLS) == set(BY_SLUG)
+    for slug in BY_SLUG:
+        path = portrait_for(slug)
+        assert client.get('/static/' + path).status_code == 200
+    for file in ('promo-mage.webp', 'footer-realm.webp'):
+        assert client.get('/static/images/' + file).status_code == 200
+    page = client.get('/').get_data(as_text=True)
+    assert 'v4-hero-runes' in page
+    assert 'v4.css' in page
+
+
+def test_portrait_is_stable_across_preview_and_saved_profile(client, app):
+    from characterlab.portraits import portrait_for
+    from characterlab import db as database
+    client.get('/generate/bg3')
+    token = csrf(client)
+    response = client.post('/generate/bg3', data={'csrf': token,'origin':'Эльф','role':'Воин','level':'2'})
+    assert response.status_code == 200
+    with client.session_transaction() as sess:
+        result = sess['preview'].copy()
+    expected = portrait_for('bg3', result['name'], result['origin'], result['role'])
+    assert expected in response.get_data(as_text=True)
+    res = client.post('/characters/save',data={'csrf':token},follow_redirects=True)
+    assert res.status_code == 200
+    assert expected in res.get_data(as_text=True)

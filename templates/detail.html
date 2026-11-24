@@ -7,7 +7,7 @@
   <div class="in-profile-copy"><span class="in-badge">✦ СОХРАНЁННЫЙ ПЕРСОНАЖ</span><h1 id="profile-name">{{ item.name }}</h1><p class="in-profile-sub">{{ item.game_title }} · {{ item.origin }} · {{ item.role }}</p><span class="in-level-tag">Уровень {{ item.level }}</span><p class="in-profile-description">{{ item.bio }}</p>
     <div class="in-profile-actions"><a class="in-btn in-btn-bright" href="{{ url_for('edit',cid=item.id) }}">✎ Редактировать</a><a class="in-btn in-btn-outline" href="{{ url_for('export',cid=item.id) }}">⇩ Скачать JSON</a><button class="in-btn in-btn-outline" type="button" onclick="window.print()">⎙ Печать / PDF</button></div>
   </div>
-  <div class="in-profile-art"><img src="{{ url_for('static',filename='images/portrait-ariel.webp' if item.id % 2 == 0 else 'images/portrait-kaydren.webp') }}" alt="Декоративная иллюстрация героя" loading="eager"></div>
+  <div class="in-profile-art"><img src="{{ url_for('static',filename=portrait_for(item.game_slug,item.name,item.origin,item.role)) }}" alt="Иллюстрация персонажа {{ item.name }}" loading="eager"></div>
 </section>
 <section class="in-profile-grid">
   <article class="in-glass in-profile-stats my-reveal"><div class="in-panel-head"><span class="in-step">◈</span><div><p class="in-kicker">СПОСОБНОСТИ ГЕРОЯ</p><h2>Характеристики</h2></div></div>

@@ -8,6 +8,7 @@ from functools import wraps
 from flask import Flask,render_template,request,redirect,url_for,flash,abort,session,g,Response
 from .catalog import GAMES, BY_SLUG
 from .engine import generate,InvalidGeneration
+from .portraits import portrait_for
 from . import db as database
 
 mimetypes.add_type("image/webp", ".webp")
@@ -30,7 +31,7 @@ def create_app(test_config=None):
             if not secrets.compare_digest(request.form.get('csrf',''),session['csrf']): abort(400,'Неверный защитный токен формы')
 
     @app.context_processor
-    def common(): return {'csrf_token':session.get('csrf',''),'games':GAMES}
+    def common(): return {'csrf_token':session.get('csrf',''),'games':GAMES,'portrait_for':portrait_for}
 
     @app.get('/')
     def index():
