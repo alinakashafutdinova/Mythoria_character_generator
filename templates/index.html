@@ -1,0 +1,23 @@
+{% extends 'base.html' %}{% block title %}Главная{% endblock %}
+{% block content %}
+<section class="hero stage-reveal">
+  <div class="hero-copy"><p class="eyebrow"><span class="eyebrow-line"></span> ВСЕЛЕННАЯ ВАШИХ ИСТОРИЙ</p>
+    <h1>МИРЫ ЖДУТ<br><em>СВОЕГО ГЕРОЯ.</em></h1>
+    <p class="lead">Выберите любимую ролевую игру, создайте уникального персонажа и сохраните его историю. Каждый новый герой — начало нового приключения.</p>
+    <div class="button-row"><a class="button primary" href="{{ url_for('games_page') }}">Создать персонажа <span aria-hidden="true">↗</span></a><a class="button ghost" href="{{ url_for('characters') }}">Моя коллекция <span aria-hidden="true">⌁</span></a></div>
+    <div class="hero-metrics"><div><strong>{{ games|length|string|e }}</strong><span>игровых миров</span></div><div><strong>02</strong><span>направления RPG</span></div><div><strong>{{ count }}</strong><span>ваших персонажей</span></div></div>
+  </div>
+  <div class="hero-art" aria-label="Декоративная иллюстрация сказочного мира"><div class="hero-scenery"></div><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="rune rune-a">✧</div><div class="rune rune-b">✦</div><div class="art-caption">THE STORY IS YOURS <span>✧</span> MYTHORIA</div></div>
+</section>
+<section class="section stage-reveal"><div class="section-heading"><div><p class="eyebrow">01 / НАЧНИТЕ ПУТЕШЕСТВИЕ</p><h2>Выберите вселенную</h2><p class="muted">От классического фэнтези до фантастических миров будущего.</p></div><a class="text-link" href="{{ url_for('games_page') }}">Все игры ↗</a></div>
+<div class="spotlight-carousel" data-carousel aria-label="Подборка игровых миров">
+ <button class="carousel-arrow prev" type="button" data-carousel-prev aria-label="Предыдущая игра">‹</button>
+ <div class="carousel-track" data-carousel-track>
+  {% for game in games[:8] %}<a class="spotlight-card" href="{{ url_for('generator',slug=game.slug) }}"><img src="{{ url_for('static',filename='images/worlds/'+game.slug+'.svg') }}" alt="Декоративная иллюстрация мира {{ game.title }}" loading="lazy"><div class="spotlight-overlay"><span class="tag">{{ 'Настольная RPG' if game.group=='tabletop' else 'Компьютерная RPG' }}</span><h3>{{ game.title }}</h3><span class="spotlight-action">Создать героя ↗</span></div></a>{% endfor %}
+ </div><button class="carousel-arrow next" type="button" data-carousel-next aria-label="Следующая игра">›</button>
+</div></section>
+<section class="section stage-reveal"><div class="section-heading"><div><p class="eyebrow">02 / ВОЗМОЖНОСТИ</p><h2>Создавайте. Сохраняйте. Исследуйте.</h2></div></div>
+<div class="feature-grid"><div class="feature-card"><span class="feature-icon">✧</span><h3>Генерация персонажей</h3><p>У каждой игровой системы — свои параметры и правила. Выбирайте настройки или доверьтесь случайности.</p></div><div class="feature-card"><span class="feature-icon">❈</span><h3>Разные игровые миры</h3><p>Настольные и компьютерные RPG в одном каталоге. Начните с любимой игры и откройте новые.</p></div><div class="feature-card"><span class="feature-icon">◇</span><h3>Ваша коллекция</h3><p>Сохраняйте персонажей, редактируйте карточки, отмечайте избранное и просматривайте статистику.</p></div></div>
+</section>
+<section class="cta stage-reveal"><div><p class="eyebrow">ВАША СЛЕДУЮЩАЯ ИСТОРИЯ</p><h2>Один персонаж. Тысяча возможных историй.</h2></div><a class="button primary" href="{{ url_for('games_page') }}">Открыть генератор ↗</a></section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}{% block title %}{{ game.title }}{% endblock %}
+{% block content %}<div class="breadcrumbs"><a href="{{ url_for('games_page') }}">← Каталог игр</a><span>/</span>{{ game.title }}</div>
+<div class="page-top stage-reveal"><p class="eyebrow">СОЗДАНИЕ ПЕРСОНАЖА</p><h1>{{ game.title }}</h1><p class="muted">{{ game.description }} Параметры формируются по упрощённой учебной модели.</p></div>
+<div class="generator-banner" style="--world-art:url('{{ url_for('static',filename='images/worlds/'+game.slug+'.svg') }}')"><span>MYTHORIA / ГЕНЕРАТОР ПЕРСОНАЖЕЙ</span></div>
+<div class="work-grid"><div class="panel"><div class="panel-heading"><span class="step">01</span><h2>Настройка генерации</h2></div>
+<form method="post" action="{{ url_for('generator',slug=game.slug) }}" class="form-stack">
+<input type="hidden" name="csrf" value="{{ csrf_token }}">
+<label for="origin">{{ game.origin_label }}</label><select id="origin" name="origin"><option value="">Случайный выбор</option>{% for option in game.origins %}<option value="{{ option }}" {% if request.form.get('origin')==option %}selected{% endif %}>{{ option }}</option>{% endfor %}</select>
+<label for="role">{{ game.role_label }}</label><select id="role" name="role"><option value="">Случайный выбор</option>{% for option in game.roles %}<option value="{{ option }}" {% if request.form.get('role')==option %}selected{% endif %}>{{ option }}</option>{% endfor %}</select>
+<label for="level">Уровень (от 1 до {{ game.max_level }})</label><input id="level" name="level" type="number" min="1" max="{{ game.max_level }}" value="{{ request.form.get('level',1) }}" required>
+<button class="button primary full" type="submit">⚄ Сгенерировать персонажа</button></form>
+</div>
+<div class="panel result-panel"><div class="panel-heading"><span class="step">02</span><h2>Результат</h2></div>
+{% if result %}
+<div class="character-mark">✦</div><p class="eyebrow">СГЕНЕРИРОВАННЫЙ ПЕРСОНАЖ</p><h2 class="character-name">{{ result.name }}</h2>
+<div class="pill-row"><span class="tag">{{ result.origin }}</span><span class="tag">{{ result.role }}</span><span class="tag">Уровень {{ result.level }}</span></div>
+<p class="character-bio">{{ result.bio }}</p><p class="micro">Умения: {{ result.abilities|join(", ") }}</p><h3 class="small-heading">Характеристики</h3>
+<div class="stats-grid">{% for label,value in result.stats.items() %}<div class="stat"><span>{{ label }}</span><strong>{{ value }}</strong></div>{% endfor %}</div>
+<form method="post" action="{{ url_for('save') }}"><input type="hidden" name="csrf" value="{{ csrf_token }}"><button class="button primary full" type="submit">♡ Сохранить в коллекцию</button></form>
+{% else %}
+<div class="empty-preview"><div class="empty-symbol">✧</div><h3>Ваш герой ещё впереди</h3><p>Настройте параметры слева и нажмите «Сгенерировать».</p></div>
+{% endif %}
+</div></div>{% endblock %}
