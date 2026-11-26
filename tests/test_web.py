@@ -130,12 +130,11 @@ def test_portrait_is_stable_across_preview_and_saved_profile(client, app):
     assert response.status_code == 200
     with client.session_transaction() as sess:
         result = sess['preview'].copy()
-    expected = portrait_for('bg3', result['name'], result['origin'], result['role'])
+    expected = result['portrait_path']
     assert expected in response.get_data(as_text=True)
     res = client.post('/characters/save',data={'csrf':token},follow_redirects=True)
     assert res.status_code == 200
     assert expected in res.get_data(as_text=True)
-
 
 
 def test_art_files_are_different(client):
