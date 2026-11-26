@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS characters (
  role_option_id INTEGER NOT NULL REFERENCES game_options(id),
  level INTEGER NOT NULL CHECK(level BETWEEN 1 AND 150),
  bio TEXT NOT NULL DEFAULT '' CHECK(length(bio) <= 1000),
+ portrait_path TEXT NOT NULL DEFAULT '',
+ visual_seed INTEGER NOT NULL DEFAULT 0 CHECK(visual_seed BETWEEN 0 AND 2147483647),
  favorite INTEGER NOT NULL DEFAULT 0 CHECK(favorite IN (0,1)),
  created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );

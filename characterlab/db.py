@@ -3,6 +3,7 @@ import sqlite3
 from pathlib import Path
 from flask import current_app, g
 from .catalog import GAMES, BY_SLUG, ROLE_SKILLS
+from .portraits import portrait_for, is_valid_portrait
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -24,6 +25,12 @@ def init_db(path):
     path=Path(path);path.parent.mkdir(parents=True,exist_ok=True)
     with connect(path) as conn:
         conn.executescript((ROOT/'database'/'schema.sql').read_text(encoding='utf-8'))
+        # Бережно обновляем старые БД Mythoria, не удаляя сохранённых героев.
+        columns={row['name'] for row in conn.execute('PRAGMA table_info(characters)')}
+        if 'portrait_path' not in columns:
+            conn.execute("ALTER TABLE characters ADD COLUMN portrait_path TEXT NOT NULL DEFAULT ''")
+        if 'visual_seed' not in columns:
+            conn.execute('ALTER TABLE characters ADD COLUMN visual_seed INTEGER NOT NULL DEFAULT 0')
         for game in GAMES:
             conn.execute('INSERT OR IGNORE INTO games(slug,title,game_group,edition,description) VALUES(?,?,?,?,?)',
                          (game.slug,game.title,game.group,game.edition,game.description))
@@ -68,13 +75,24 @@ def save_character(db,payload):
     if not 1<=len(name)<=80: raise ValueError('Неверное имя')
     bio=str(payload['bio'])
     if len(bio)>1000: raise ValueError('Слишком длинная биография')
+    art = payload.get('portrait_path','')
+    if art and not is_valid_portrait(game.slug, art):
+        raise ValueError('Неверная иллюстрация персонажа')
+    art = art or portrait_for(game.slug, name, payload['origin'], payload['role'])
+    try:
+        visual_seed = int(payload.get('visual_seed',0))
+    except (ValueError,TypeError):
+        raise ValueError('Неверный визуальный код') from None
+    if not 0 <= visual_seed <= 2147483647:
+        raise ValueError('Недопустимый визуальный код')
     row=db.execute('SELECT id FROM games WHERE slug=?',(game.slug,)).fetchone()
     if not row: raise ValueError('Игра отсутствует в БД')
     gid=row['id']
     origin_id=db.execute('SELECT id FROM game_options WHERE game_id=? AND option_group=? AND label=?',(gid,'origin',payload['origin'])).fetchone()['id']
     role_id=db.execute('SELECT id FROM game_options WHERE game_id=? AND option_group=? AND label=?',(gid,'role',payload['role'])).fetchone()['id']
     with db:
-        result=db.execute('INSERT INTO characters(game_id,name,origin_option_id,role_option_id,level,bio) VALUES(?,?,?,?,?,?)',(gid,name,origin_id,role_id,int(payload['level']),bio))
+        result=db.execute('''INSERT INTO characters(game_id,name,origin_option_id,role_option_id,level,bio,portrait_path,visual_seed)
+                             VALUES(?,?,?,?,?,?,?,?)''',(gid,name,origin_id,role_id,int(payload['level']),bio,art,visual_seed))
         cid=result.lastrowid
         for ability in ROLE_SKILLS.get(payload['role'],[]):
             a=db.execute('SELECT id FROM abilities WHERE game_id=? AND label=?',(gid,ability)).fetchone()

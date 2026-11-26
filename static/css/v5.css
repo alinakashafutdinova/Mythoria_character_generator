@@ -1,0 +1,33 @@
+/* Mythoria v5. Образы персонажей: тематическая галерея и индивидуальная аура. */
+:root{--v5-night:#091a37;--v5-cyan:#65eaff;--v5-pink:#ff70db}
+.v5-appearance{border-radius:24px;padding:21px;margin:22px 0 15px;background:linear-gradient(130deg,#0b2752c9,#251643c4);border:1px solid #73dffd65;box-shadow:inset 0 0 22px #20cdff14}
+.v5-appearance-title{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.v5-appearance-title h3{font-size:clamp(17px,2vw,22px);margin:6px 0 2px;color:#f0f9ff}
+.v5-appearance-counter{display:inline-flex;align-items:center;justify-content:center;padding:7px 12px;border-radius:30px;border:1px solid #8ecfff63;color:#b9f5ff;font-size:12px;font-weight:750;font-variant-numeric:tabular-nums;white-space:nowrap}
+.v5-appearance .in-hint{margin:10px 0 15px;line-height:1.55;font-size:12px}
+.v5-portrait-picker{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+.v5-portrait-option{position:relative;display:block;border:1px solid #75bfff6e;border-radius:13px;background:#0a1730;overflow:hidden;cursor:pointer;aspect-ratio:3/4;isolation:isolate;transition:transform .28s ease,border-color .28s,box-shadow .28s}
+.v5-portrait-option img{display:block;width:100%;height:100%;object-fit:cover;object-position:center 23%;transition:transform .45s cubic-bezier(.22,1,.36,1);filter:saturate(1.05)}
+.v5-portrait-option>span{position:absolute;left:6px;bottom:6px;min-width:22px;border-radius:10px;padding:2px 5px;font-size:10px;color:#effaff;background:#08122ca8;backdrop-filter:blur(8px)}
+.v5-portrait-option:hover{transform:translateY(-5px);border-color:#6af5ff;box-shadow:0 0 15px #40ddff66}
+.v5-portrait-option:hover img{transform:scale(1.09)}
+.v5-portrait-option.is-active{border:2px solid #ff82e8;box-shadow:0 0 0 2px #4eecff8a,0 0 21px #ff51d67a}
+.v5-portrait-option.is-active::after{content:'✓';position:absolute;right:5px;top:5px;border-radius:50%;width:23px;height:23px;display:grid;place-items:center;color:white;background:linear-gradient(145deg,#fb4cc9,#3389ff);font-size:13px;box-shadow:0 0 13px #f458f3}
+.v5-portrait-option:focus-visible{outline:3px solid #9deaff;outline-offset:3px}
+/* Цвет ауры меняется для каждого героя, иллюстрация остаётся читаемой. */
+.v5-portrait-identity{position:relative;isolation:isolate}
+.v5-portrait-identity::after{content:"";pointer-events:none;position:absolute;inset:0;z-index:2;border-radius:inherit;background:radial-gradient(ellipse at 20% 76%,var(--portrait-cyan,#31e8ff) 0%,transparent 43%),radial-gradient(ellipse at 80% 25%,var(--portrait-pink,#ff67d4) 0%,transparent 45%);mix-blend-mode:screen;opacity:.09;transition:opacity .45s ease}
+.v5-portrait-identity:hover::after{opacity:.19}
+.v5-portrait-identity img{filter:hue-rotate(var(--portrait-hue,0deg)) saturate(1.05)}
+.v5-portrait-identity:hover img{filter:hue-rotate(var(--portrait-hue,0deg)) saturate(1.23)}
+.v5-edit-portrait{display:grid;grid-template-columns:minmax(135px,190px) minmax(0,1fr);gap:18px;align-items:start;margin-top:14px}
+.v5-edit-preview{border:1px solid #80ddff88;border-radius:19px;overflow:hidden;aspect-ratio:3/4;box-shadow:0 0 30px #13c5ff2a;background:#070d27}
+.v5-edit-preview img{display:block;width:100%;height:100%;object-fit:cover}
+.v5-edit-appearance{margin:26px 0}
+.v5-edit-appearance .v5-portrait-picker{grid-template-columns:repeat(3,minmax(0,1fr))}
+.v5-edit-appearance .v5-portrait-option{aspect-ratio:4/3}
+@media(max-width:1100px){.v5-portrait-picker{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:700px){.v5-appearance{padding:14px;border-radius:16px}.v5-portrait-picker{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.v5-edit-portrait{grid-template-columns:1fr}.v5-edit-preview{width:min(65%,230px);margin:0 auto}.v5-edit-appearance .v5-portrait-picker{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:400px){.v5-edit-appearance .v5-portrait-picker{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.v5-portrait-option,.v5-portrait-option img,.v5-portrait-identity img{transition:none!important;animation:none!important}}
+@media print{.v5-appearance,.v5-portrait-picker{display:none!important}}

@@ -4,6 +4,7 @@
 """
 import random
 from .catalog import BY_SLUG, ROLE_PRIMARY, ROLE_SKILLS
+from .portraits import portrait_for
 
 NAMES = ('Астра','Лиан','Элвин','Кира','Рен','Мира','Торн','Нора','Дариан','Айрис','Макс','Эрика')
 TRAITS = ('любознательный','сдержанный','смелый','осторожный','добродушный','упорный')
@@ -150,4 +151,8 @@ def generate(slug, origin=None, role=None, *, seed=None, level=1):
     stats=STRATEGIES[slug](game,role,rng)
     character_name = f'{rng.choice(NAMES)} {rng.choice(("Северный", "Тихий", "Странник", "Искатель", "Пепельный"))}'
     bio=f'{character_name} — {rng.choice(TRAITS)} персонаж. Его цель — {rng.choice(GOALS)}.'
-    return {'game_slug':slug,'name':character_name,'origin':origin,'role':role,'level':level,'bio':bio,'stats':stats,'abilities':ROLE_SKILLS.get(role,[])}
+    visual_seed = rng.getrandbits(31)
+    portrait_path = portrait_for(slug, character_name, origin, role, seed=visual_seed)
+    return {'game_slug':slug,'name':character_name,'origin':origin,'role':role,'level':level,
+            'bio':bio,'stats':stats,'abilities':ROLE_SKILLS.get(role,[]),
+            'portrait_path':portrait_path,'visual_seed':visual_seed}

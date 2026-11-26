@@ -144,7 +144,19 @@ if (showcase) {
      stats:[['Ловкость',70],['Интеллект',91],['Магия',96]]},
     {name:'ЛИРА',role:'Следопыт · Путешественница',game:'pathfinder',
      story:'Путешествует по забытым лесам, собирая истории древних королевств.',
-     stats:[['Сила',61],['Ловкость',90],['Мудрость',84]]}
+     stats:[['Сила',61],['Ловкость',90],['Мудрость',84]]},
+    {name:'НИКС',role:'Нетраннер · Разведчица',game:'cyberpunk',
+     story:'Никс знает цифровые тайны ночного города и умеет уходить от любой слежки.',
+     stats:[['Техника',96],['Реакция',83],['Воля',75]]},
+    {name:'СИГРУН',role:'Воительница · Защитница',game:'skyrim',
+     story:'Северная странница, которая никогда не оставляет своих союзников в беде.',
+     stats:[['Сила',93],['Стойкость',92],['Ловкость',71]]},
+    {name:'ЭЛИАС',role:'Учёный · Исследователь',game:'cthulhu',
+     story:'Расшифровывает загадочные рукописи, собирая истории забытых эпох.',
+     stats:[['Интеллект',97],['Знание',93],['Воля',78]]},
+    {name:'ВАЭЛОРА',role:'Мистик · Провидица',game:'starfinder',
+     story:'Странствует между звёздами и ищет ответы в сиянии далёких миров.',
+     stats:[['Магия',95],['Мудрость',94],['Интуиция',87]]}
   ];
   const cards = [...showcase.querySelectorAll('[data-hero-index]')];
   const dots = showcase.querySelector('[data-showcase-dots]');
@@ -352,6 +364,7 @@ if (generationForm) {
       }
       if (!reduceMotion) await new Promise(resolve => setTimeout(resolve,Math.max(0,950-(performance.now()-started))));
       resultElement()?.replaceWith(next);
+      updatePortraitCounters(next);
       for (const bar of next.querySelectorAll('.in-stat-fill')) bar.classList.add('is-ready');
       if (window.innerWidth < 850) next.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});
     } catch (error) {
@@ -370,3 +383,47 @@ if (generationForm) {
     }
   });
 }
+
+// Mythoria v5. Выбор портрета работает в обычной форме и после AJAX-генерации.
+// Сохраняем только путь из галереи; сервер отдельно проверяет его допустимость.
+document.addEventListener('click', event => {
+  const option = event.target.closest('[data-portrait-option]');
+  if (!option) return;
+  const picker = option.closest('[data-portrait-picker]');
+  if (!picker) return;
+  const selectedPath = option.dataset.portraitPath;
+  const input = document.getElementById(picker.dataset.portraitInput);
+  if (!selectedPath || !input) return;
+  input.value = selectedPath;
+  for (const item of picker.querySelectorAll('[data-portrait-option]')) {
+    const active = item === option;
+    item.classList.toggle('is-active', active);
+    item.setAttribute('aria-pressed', String(active));
+  }
+  const image = document.querySelector(picker.dataset.portraitTarget);
+  if (image) {
+    // URL берём из уже отображённого <img>, а не из непроверенного пользовательского ввода.
+    const source = option.querySelector('img');
+    if (source) image.src = source.src;
+    image.animate?.([
+      {opacity:.45,filter:'blur(7px)',transform:'scale(.96)'},
+      {opacity:1,filter:'blur(0)',transform:'scale(1)'}
+    ], {duration:450,easing:'cubic-bezier(.22,1,.36,1)'});
+  }
+  const count = picker.closest('.v5-appearance')?.querySelector('[data-portrait-count]');
+  if (count) {
+    const index = [...picker.querySelectorAll('[data-portrait-option]')].indexOf(option) + 1;
+    count.textContent = `${index} / ${picker.querySelectorAll('[data-portrait-option]').length}`;
+  }
+});
+
+// Отображаем номер выбранного изображения, в том числе после генерации без перезагрузки.
+function updatePortraitCounters(root = document) {
+  for (const picker of root.querySelectorAll('[data-portrait-picker]')) {
+    const all = [...picker.querySelectorAll('[data-portrait-option]')];
+    const active = all.findIndex(item => item.classList.contains('is-active'));
+    const count = picker.closest('.v5-appearance')?.querySelector('[data-portrait-count]');
+    if (count) count.textContent = `${Math.max(1,active+1)} / ${all.length}`;
+  }
+}
+updatePortraitCounters();

@@ -23,13 +23,21 @@
   <div class="in-glass in-result my-reveal {% if result %}is-conjured{% endif %}" id="generation-result" aria-live="polite">
     <div class="in-panel-head"><span class="in-step in-step-cyan">02</span><div><p class="in-kicker">РЕЗУЛЬТАТ ГЕНЕРАЦИИ</p><h2>Ваш персонаж</h2></div>{% if result %}<span class="in-status">✦ Готов</span>{% endif %}</div>
     {% if result %}
-      <div class="in-result-main"><div class="in-result-portrait my-portrait-art" aria-label="Тематическая иллюстрация героя"><span class="v4-portrait-rune" aria-hidden="true">✦</span><img src="{{ url_for('static',filename=portrait_for(game.slug,result.name,result.origin,result.role)) }}" alt="Иллюстрация для персонажа {{ result.name }}" loading="eager"><span>MYTHORIA</span></div>
+      <div class="in-result-main"><div class="in-result-portrait my-portrait-art v5-portrait-identity" data-portrait-live style="{{ portrait_style(result.visual_seed) }}" aria-label="Выбранный образ героя"><span class="v4-portrait-rune" aria-hidden="true">✦</span><img src="{{ url_for('static',filename=portrait_for(game.slug,result.name,result.origin,result.role,selected=result.portrait_path)) }}" alt="Иллюстрация для персонажа {{ result.name }}" loading="eager"><span>MYTHORIA</span></div>
         <div class="in-result-info"><span class="in-badge">НОВЫЙ ГЕРОЙ</span><h3>{{ result.name }}</h3><p class="in-role">{{ result.origin }} · {{ result.role }}</p><span class="in-level-tag">✦ Уровень {{ result.level }}</span><p class="in-result-bio">{{ result.bio }}</p></div></div>
       <div class="in-stat-header"><h3>Характеристики</h3><span>Значения по правилам выбранного мира</span></div>
       <div class="in-stat-list">{% for label,value in result.stats.items() %}<div class="in-stat-row"><span>{{ label }}</span><div class="in-stat-track"><i class="in-stat-fill" style="--in-fill:{{ (100 * value / stat_max[label])|round(2) }}%"></i></div><strong>{{ value }}</strong></div>{% endfor %}</div>
       <div class="in-skill-list"><h3>Умения</h3><div class="in-skill-pills">{% for skill in result.abilities %}<span>✧ {{ skill }}</span>{% endfor %}</div></div>
-      <form method="post" action="{{ url_for('save') }}" class="in-save-form"><input type="hidden" name="csrf" value="{{ csrf_token }}"><button class="in-btn in-btn-bright" type="submit"><span aria-hidden="true">♡</span> Сохранить в коллекцию</button></form>
-      <p class="in-illustration-note">Портрет подбирается из тематической коллекции иллюстраций. Внешность не рассчитывается по правилам игры.</p>
+      <section class="v5-appearance in-glass" aria-label="Выбор внешности персонажа">
+        <div class="v5-appearance-title"><div><span class="in-kicker">✧ ВНЕШНОСТЬ</span><h3>Выберите образ героя</h3></div><span class="v5-appearance-counter" data-portrait-count></span></div>
+        <p class="in-hint">Все изображения подготовлены для Mythoria. Вы можете выбрать другой портрет перед сохранением.</p>
+        <div class="v5-portrait-picker" data-portrait-picker data-portrait-input="selected-portrait" data-portrait-target="[data-portrait-live] img" role="group" aria-label="Галерея образов">
+        {% for art in portrait_choices(game.slug,result.role,result.origin) %}
+          <button type="button" class="v5-portrait-option {% if art==result.portrait_path %}is-active{% endif %}" data-portrait-option data-portrait-path="{{ art }}" aria-label="Выбрать образ {{ loop.index }}" aria-pressed="{{ 'true' if art==result.portrait_path else 'false' }}"><img src="{{ url_for('static',filename=art) }}" alt="" loading="lazy"><span>{{ '%02d'|format(loop.index) }}</span></button>
+        {% endfor %}</div>
+      </section>
+      <form method="post" action="{{ url_for('save') }}" class="in-save-form"><input type="hidden" name="csrf" value="{{ csrf_token }}"><input id="selected-portrait" type="hidden" name="portrait_path" value="{{ result.portrait_path }}"><button class="in-btn in-btn-bright" type="submit"><span aria-hidden="true">♡</span> Сохранить в коллекцию</button></form>
+      <p class="in-illustration-note">Образ выбирается из оригинальной галереи Mythoria. Изображение сохраняется вместе с персонажем и не изменится при переименовании.</p>
     {% else %}
       <div class="in-empty-character"><div class="in-empty-image"><img src="{{ url_for('static',filename=portrait_for(game.slug)) }}" alt="Пример иллюстрации фэнтезийного персонажа"></div><span class="in-empty-symbol" aria-hidden="true">✧</span><h3>Ваша история начинается здесь</h3><p>Выберите параметры слева и нажмите «Сгенерировать героя». Результат появится в этой карточке.</p><span class="in-status in-status-soft">Ожидаем генерацию</span></div>
     {% endif %}

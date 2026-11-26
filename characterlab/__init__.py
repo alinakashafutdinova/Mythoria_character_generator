@@ -8,7 +8,7 @@ from functools import wraps
 from flask import Flask,render_template,request,redirect,url_for,flash,abort,session,g,Response
 from .catalog import GAMES, BY_SLUG
 from .engine import generate,InvalidGeneration
-from .portraits import portrait_for
+from .portraits import portrait_for, portrait_choices, portrait_style, is_valid_portrait
 from . import db as database
 
 mimetypes.add_type("image/webp", ".webp")
@@ -31,7 +31,7 @@ def create_app(test_config=None):
             if not secrets.compare_digest(request.form.get('csrf',''),session['csrf']): abort(400,'Неверный защитный токен формы')
 
     @app.context_processor
-    def common(): return {'csrf_token':session.get('csrf',''),'games':GAMES,'portrait_for':portrait_for}
+    def common(): return {'csrf_token':session.get('csrf',''),'games':GAMES,'portrait_for':portrait_for,'portrait_choices':portrait_choices,'portrait_style':portrait_style}
 
     @app.get('/')
     def index():
@@ -59,6 +59,11 @@ def create_app(test_config=None):
     def save():
         p=session.pop('preview',None)
         if not p: flash('Сначала сгенерируйте персонажа','error');return redirect(url_for('games_page'))
+        requested_art=request.form.get('portrait_path','')
+        if requested_art:
+            if not is_valid_portrait(p['game_slug'],requested_art):
+                abort(400,'Неизвестный портрет')
+            p['portrait_path']=requested_art
         try: cid=database.save_character(database.get_db(),p)
         except (ValueError,KeyError,TypeError) as exc:
             flash(f'Не удалось сохранить: {exc}','error');return redirect(url_for('games_page'))
@@ -89,6 +94,10 @@ def create_app(test_config=None):
         if request.method=='POST':
             name=request.form.get('name','').strip()
             bio=request.form.get('bio','').strip()
+            new_art=request.form.get('portrait_path',item['portrait_path'])
+            if not is_valid_portrait(item['game_slug'],new_art):
+                flash('Выберите иллюстрацию из галереи вашей игры','error')
+                return render_template('edit.html',item=item,stats=stats),400
             if not 1<=len(name)<=80 or len(bio)>1000:
                 flash('Имя: 1–80 символов, биография: до 1000','error')
                 return render_template('edit.html',item=item,stats=stats),400
@@ -100,7 +109,7 @@ def create_app(test_config=None):
                     changes.append((value,cid,s['id']))
                 connection=database.get_db()
                 with connection:
-                    connection.execute('UPDATE characters SET name=?,bio=? WHERE id=?',(name,bio,cid))
+                    connection.execute('UPDATE characters SET name=?,bio=?,portrait_path=? WHERE id=?',(name,bio,new_art,cid))
                     connection.executemany('UPDATE character_stats SET value=? WHERE character_id=? AND attribute_id=?',changes)
             except (ValueError,KeyError):
                 flash('Проверьте характеристики','error')
@@ -128,7 +137,8 @@ def create_app(test_config=None):
     def export(cid):
         item,stats,skills=fetch_or_404(cid)
         fields={'id':item['id'],'game':item['game_title'],'name':item['name'],'origin':item['origin'],
-                'role':item['role'],'level':item['level'],'bio':item['bio'],'stats':{s['label']:s['value'] for s in stats},'abilities':[x['label'] for x in skills]}
+                'role':item['role'],'level':item['level'],'bio':item['bio'],'stats':{s['label']:s['value'] for s in stats},'abilities':[x['label'] for x in skills],
+                'portrait':item['portrait_path'],'visual_seed':item['visual_seed']}
         return Response(json.dumps(fields,ensure_ascii=False,indent=2),mimetype='application/json',headers={'Content-Disposition':f'attachment; filename="character-{cid}.json"'})
 
     @app.get('/statistics')

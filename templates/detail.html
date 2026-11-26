@@ -7,7 +7,7 @@
   <div class="in-profile-copy"><span class="in-badge">✦ СОХРАНЁННЫЙ ПЕРСОНАЖ</span><h1 id="profile-name">{{ item.name }}</h1><p class="in-profile-sub">{{ item.game_title }} · {{ item.origin }} · {{ item.role }}</p><span class="in-level-tag">Уровень {{ item.level }}</span><p class="in-profile-description">{{ item.bio }}</p>
     <div class="in-profile-actions"><a class="in-btn in-btn-bright" href="{{ url_for('edit',cid=item.id) }}">✎ Редактировать</a><a class="in-btn in-btn-outline" href="{{ url_for('export',cid=item.id) }}">⇩ Скачать JSON</a><button class="in-btn in-btn-outline" type="button" onclick="window.print()">⎙ Печать / PDF</button></div>
   </div>
-  <div class="in-profile-art"><img src="{{ url_for('static',filename=portrait_for(item.game_slug,item.name,item.origin,item.role)) }}" alt="Иллюстрация персонажа {{ item.name }}" loading="eager"></div>
+  <div class="in-profile-art v5-portrait-identity" style="{{ portrait_style(item.visual_seed) }}"><img src="{{ url_for('static',filename=portrait_for(item.game_slug,item.name,item.origin,item.role,selected=item.portrait_path)) }}" alt="Иллюстрация персонажа {{ item.name }}" loading="eager"></div>
 </section>
 <section class="in-profile-grid">
   <article class="in-glass in-profile-stats my-reveal"><div class="in-panel-head"><span class="in-step">◈</span><div><p class="in-kicker">СПОСОБНОСТИ ГЕРОЯ</p><h2>Характеристики</h2></div></div>
@@ -18,5 +18,5 @@
     <div class="in-manage"><form method="post" action="{{ url_for('favorite',cid=item.id) }}"><input type="hidden" name="csrf" value="{{ csrf_token }}"><button class="in-btn in-btn-outline" type="submit">{{ '♥ Убрать из избранного' if item.favorite else '♡ Добавить в избранное' }}</button></form><form method="post" action="{{ url_for('delete',cid=item.id) }}" data-confirm="Вы действительно хотите удалить персонажа? Это действие нельзя отменить."><input type="hidden" name="csrf" value="{{ csrf_token }}"><button class="in-btn in-btn-danger" type="submit">Удалить персонажа</button></form></div>
   </article>
 </section>
-<p class="in-illustration-note in-bottom-disclaimer">Портрет используется для оформления и не означает, что приложение генерирует внешность персонажа.</p>
+<p class="in-illustration-note in-bottom-disclaimer">Внешность выбрана из иллюстраций Mythoria и сохранена вместе с этим персонажем.</p>
 {% endblock %}
