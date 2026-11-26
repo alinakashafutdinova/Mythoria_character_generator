@@ -182,6 +182,11 @@ def create_app(test_config=None):
             </g></svg>'''
         return Response(svg,mimetype='image/svg+xml',headers={'Cache-Control':'public, max-age=86400'})
 
+    @app.get('/hero-demo')
+    def hero_demo():
+        """Интерактивная сцена с персонажем на прозрачном фоне."""
+        return render_template('hero_demo.html')
+
     @app.get('/help')
     def help_page(): return render_template('help.html')
 

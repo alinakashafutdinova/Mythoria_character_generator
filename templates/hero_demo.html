@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Живая карточка героя{% endblock %}
+{% block content %}
+<section class="demo-intro" aria-labelledby="demo-heading">
+  <div><p class="demo-eyebrow"><span class="demo-eyebrow-dot"></span> MYTHORIA / ИНТЕРАКТИВНЫЙ ГЕРОЙ</p>
+    <h1 id="demo-heading">ГЕРОЙ, КОТОРЫЙ <em>ВЫХОДИТ ЗА РАМКИ</em></h1>
+    <p>Познакомьтесь с первым ожившим персонажем. Перемещайте курсор, меняйте миры и пробуйте магические способности.</p></div>
+  <div class="demo-intro-note"><span>✧</span> <strong>ПРОТОТИП 01</strong><small>В качестве примера используется ваш рисунок воина с мечом и щитом.</small></div>
+</section>
+<section class="demo-shell" data-demo-shell aria-label="Интерактивная сцена персонажа">
+  <div class="demo-stage" id="hero-stage" data-hero-stage>
+    <div class="demo-bg-layer demo-bg-active" data-background-layer aria-hidden="true" style="background-image:linear-gradient(90deg,rgba(4,10,29,.94) 0%,rgba(6,14,35,.75) 34%,rgba(5,12,33,.32) 75%),url('{{ url_for('static',filename='images/worlds/dnd.webp') }}')"></div>
+    <div class="demo-bg-layer" data-background-layer aria-hidden="true"></div>
+    <div class="demo-gradient-shade" aria-hidden="true"></div>
+    <div class="demo-stars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="demo-portal" aria-hidden="true"><div class="demo-portal-outer"></div><div class="demo-portal-mid"></div><div class="demo-portal-inner"></div><span>ᚠ · ᚱ · ᛟ · ᛋ · ᛉ · ᚹ · ᚠ</span></div>
+    <div class="demo-ground-light" aria-hidden="true"></div>
+    <div class="demo-hero-wrap" aria-hidden="true">
+      <div class="demo-hero-aura"></div>
+      <img class="demo-hero-img" src="{{ url_for('static',filename='images/characters/warrior-shield.webp') }}" width="1086" height="1448" alt="" fetchpriority="high" draggable="false">
+      <div class="demo-sword-glow"></div><div class="demo-shield-glow"></div>
+    </div>
+    <div class="demo-stage-copy">
+      <p class="demo-kicker">✦ ПЕРВЫЙ ПРИЗВАННЫЙ ГЕРОЙ</p>
+      <h2>СТРАЖ <span>РАССВЕТА</span></h2>
+      <p class="demo-lore">Воин, поклявшийся охранять древние врата. Его щит выдерживает удары тьмы, а меч пробуждается в свете магических созвездий.</p>
+      <div class="demo-chips"><span>⚔ Воин</span><span>◇ Защитник</span><span>✧ Фэнтези</span></div>
+      <div class="demo-stage-cta"><button type="button" class="demo-button demo-button-primary" data-summon>✧ <span>Призвать героя</span> <span aria-hidden="true">↗</span></button><a class="demo-button demo-button-ghost" href="{{ url_for('generator',slug='dnd') }}">Открыть генератор →</a></div>
+    </div>
+    <div class="demo-stage-info" aria-live="polite"><span class="demo-orbit-icon">✦</span><div><strong data-demo-status>Герой готов к призыву</strong><span data-demo-subtitle>Используйте кнопки способностей ниже</span></div></div>
+    <div class="demo-stage-caption">MYTHORIA <span>/</span> HERO EXPERIENCE <span>001</span></div>
+    <div class="demo-summon-flash" aria-hidden="true"></div>
+  </div>
+
+  <div class="demo-controls" aria-label="Управление персонажем">
+    <div class="demo-control-section">
+      <p class="demo-controls-heading"><span>01</span> СМЕНИТЕ МИР</p>
+      <div class="demo-world-buttons" role="group" aria-label="Выберите фон для персонажа">
+        <button class="demo-world is-selected" type="button" data-demo-world="citadel" data-world-name="Затерянная цитадель" data-world-image="{{ url_for('static',filename='images/worlds/dnd.webp') }}" aria-pressed="true"><span class="demo-world-thumbnail" style="background-image:url('{{ url_for('static',filename='images/worlds/dnd.webp') }}')"></span>Цитадель</button>
+        <button class="demo-world" type="button" data-demo-world="frost" data-world-name="Северные земли" data-world-image="{{ url_for('static',filename='images/worlds/skyrim.webp') }}" aria-pressed="false"><span class="demo-world-thumbnail" style="background-image:url('{{ url_for('static',filename='images/worlds/skyrim.webp') }}')"></span>Север</button>
+        <button class="demo-world" type="button" data-demo-world="ashes" data-world-name="Багровые руины" data-world-image="{{ url_for('static',filename='images/worlds/elden.webp') }}" aria-pressed="false"><span class="demo-world-thumbnail" style="background-image:url('{{ url_for('static',filename='images/worlds/elden.webp') }}')"></span>Руины</button>
+      </div>
+    </div>
+    <div class="demo-control-section">
+      <p class="demo-controls-heading"><span>02</span> ПРОБУДИТЕ СИЛУ</p>
+      <div class="demo-ability-buttons" role="group" aria-label="Эффекты способностей">
+        <button type="button" class="demo-ability" data-demo-ability="sword" aria-pressed="false"><span>⚔</span> Сияние меча</button>
+        <button type="button" class="demo-ability" data-demo-ability="shield" aria-pressed="false"><span>◈</span> Защита щита</button>
+        <button type="button" class="demo-ability" data-demo-ability="arcane" aria-pressed="false"><span>✧</span> Магическая аура</button>
+      </div>
+    </div>
+    <div class="demo-control-section demo-motion-section">
+      <p class="demo-controls-heading"><span>03</span> ЭФФЕКТЫ</p>
+      <button type="button" class="demo-motion-toggle" data-demo-motion aria-pressed="true"><span class="demo-motion-indicator"></span>Анимация включена</button>
+      <small>Для небольших экранов движения упрощены.</small>
+    </div>
+  </div>
+</section>
+<div class="demo-bottom-note"><span>◈</span> Это интерактивная демонстрация оформления одного героя. Изображение предоставлено для Mythoria, а эффекты создаются с помощью CSS и JavaScript. <a href="{{ url_for('games_page') }}">Перейти к играм →</a></div>
+<script defer src="{{ url_for('static',filename='js/hero-demo.js') }}"></script>
+{% endblock %}

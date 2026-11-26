@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="{{ url_for('static',filename='css/interiors.css') }}">
   <link rel="stylesheet" href="{{ url_for('static',filename='css/v4.css') }}">
   <link rel="stylesheet" href="{{ url_for('static',filename='css/v5.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/hero-demo.css') }}">
   <script defer src="{{ url_for('static',filename='js/app.js') }}"></script>
 </head>
 <body>
@@ -28,6 +29,7 @@
         <a href="{{ url_for('index') }}" class="{% if request.endpoint=='index' %}active{% endif %}">Главная</a>
         <a href="{{ url_for('index') }}#features">Возможности</a>
         <a href="{{ url_for('games_page') }}" class="{% if request.endpoint in ('games_page','generator') %}active{% endif %}">Каталог игр</a>
+        <a href="{{ url_for('hero_demo') }}" class="{% if request.endpoint=='hero_demo' %}active{% endif %}">3D-герой</a>
         <a href="{{ url_for('index') }}#heroes">Галерея</a>
         <a href="{{ url_for('characters') }}" class="{% if request.endpoint in ('characters','detail','edit') %}active{% endif %}">Персонажи</a>
         <a href="{{ url_for('statistics') }}" class="{% if request.endpoint=='statistics' %}active{% endif %}">Статистика</a>
