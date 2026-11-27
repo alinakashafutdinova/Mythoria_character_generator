@@ -26,21 +26,6 @@ for (const form of document.querySelectorAll('form[data-confirm]')) {
   });
 }
 
-// Фильтр каталога игр
-const filterTabs = document.querySelectorAll('.tab[data-filter]');
-const gameCards = document.querySelectorAll('.game-card[data-group]');
-for (const tab of filterTabs) {
-  tab.addEventListener('click', () => {
-    for (const t of filterTabs) {
-      t.classList.toggle('active', t === tab);
-      t.setAttribute('aria-pressed', String(t === tab));
-    }
-    for (const card of gameCards) {
-      card.hidden = tab.dataset.filter !== 'all' && card.dataset.group !== tab.dataset.filter;
-    }
-  });
-}
-
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // Плавное появление блоков при прокрутке, без скрытия контента при отсутствии JS
@@ -159,6 +144,7 @@ if (showcase) {
      stats:[['Магия',95],['Мудрость',94],['Интуиция',87]]}
   ];
   const cards = [...showcase.querySelectorAll('[data-hero-index]')];
+  const readyGames = new Set((showcase.dataset.readyGames || '').split(',').filter(Boolean));
   const dots = showcase.querySelector('[data-showcase-dots]');
   let active = 0;
   const update = index => {
@@ -168,6 +154,7 @@ if (showcase) {
     showcase.querySelector('[data-hero-role]').textContent = hero.role;
     showcase.querySelector('[data-hero-story]').textContent = hero.story;
     showcase.querySelector('[data-hero-link]').href = `/generate/${encodeURIComponent(hero.game)}`;
+    showcase.querySelector('[data-hero-link]').textContent = readyGames.has(hero.game) ? 'Создать похожего персонажа →' : 'Скоро — посмотреть анонс →';
     const stats = showcase.querySelector('[data-hero-stats]');
     stats.replaceChildren();
     for (const [name, value] of hero.stats) {
@@ -246,7 +233,7 @@ if (gameSearch) {
     let visible = 0;
     for (const card of cards) {
       const fitsName = card.dataset.gameTitle.toLocaleLowerCase('ru').includes(query);
-      const fitsType = selected === 'all' || selected === card.dataset.group;
+      const fitsType = selected === 'all' || selected === card.dataset.group || (selected === 'available' && card.dataset.availability === 'available') || (selected === 'soon' && card.dataset.availability === 'soon');
       card.hidden = !(fitsName && fitsType);
       if (!card.hidden) visible++;
     }

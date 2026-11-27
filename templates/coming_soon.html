@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}{{ game.title }} — скоро{% endblock %}
+{% block content %}
+<nav class="breadcrumbs in-breadcrumbs" aria-label="Навигация"><a href="{{ url_for('games_page') }}">Каталог игр</a><span aria-hidden="true">/</span><span>{{ game.title }}</span></nav>
+<section class="launch-teaser in-glass" aria-labelledby="teaser-heading">
+  <div class="launch-teaser-image" style="--launch-image:url('{{ url_for('static',filename='images/worlds/' + game.slug + '.webp') }}')" aria-hidden="true"></div>
+  <div class="launch-teaser-orbit" aria-hidden="true"><img src="{{ url_for('static',filename='images/mythoria-lock.svg') }}" width="84" height="84" alt=""></div>
+  <div class="launch-teaser-body">
+    <span class="launch-teaser-label">✧ МИР ОТКРОЕТСЯ ПОЗЖЕ</span>
+    <h1 id="teaser-heading">{{ game.title }}</h1>
+    <p>{{ game.description }}</p>
+    <p class="launch-teaser-desc">Этот раздел пока в разработке. Мы постепенно готовим изображения, параметры и проверяем генерацию персонажей. Точную дату открытия ещё не назначили.</p>
+    <div class="launch-teaser-actions">
+      <a class="in-btn in-btn-bright" href="{{ url_for('games_page') }}">← Вернуться к играм</a>
+      <a class="in-btn in-btn-outline" href="{{ url_for('generator',slug=available_games[0].slug) }}">Попробовать доступную игру →</a>
+    </div>
+  </div>
+</section>
+<section class="launch-teaser-note"><span>✦</span><p>Сейчас доступны <strong>{{ available_games|length }} игровые системы</strong> с генерацией, сохранением и редактированием персонажей. Их можно выбрать в каталоге.</p></section>
+{% endblock %}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" role="img">
+<defs><linearGradient id="edge" x1="13" y1="11" x2="119" y2="129" gradientUnits="userSpaceOnUse"><stop stop-color="#7EF3FF"/><stop offset=".53" stop-color="#B48FFF"/><stop offset="1" stop-color="#FF76D7"/></linearGradient><linearGradient id="body" x1="32" y1="48" x2="99" y2="115"><stop stop-color="#183E77"/><stop offset="1" stop-color="#250E4C"/></linearGradient><filter id="glow" x="-70%" y="-70%" width="240%" height="240%"><feGaussianBlur stdDeviation="5"/></filter></defs>
+<path d="M42 54V39a22 22 0 0 1 44 0v15" stroke="#61E7FF" stroke-opacity=".5" stroke-width="10" stroke-linecap="round" filter="url(#glow)"/>
+<path d="M42 54V39a22 22 0 0 1 44 0v15" stroke="url(#edge)" stroke-width="7" stroke-linecap="round"/>
+<rect x="26" y="54" width="76" height="65" rx="15" fill="url(#body)" stroke="url(#edge)" stroke-width="5"/>
+<path d="m64 68 4 10 10 4-10 4-4 15-4-15-10-4 10-4Z" fill="#B8F9FF"/><circle cx="64" cy="82" r="3" fill="white"/><path d="M14 65h8M106 65h8M64 11v7" stroke="#F994E3" stroke-width="2" stroke-linecap="round"/>
+</svg>

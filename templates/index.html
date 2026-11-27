@@ -33,14 +33,19 @@
 </section>
 
 <section class="shell my-section my-reveal" id="worlds" aria-labelledby="worlds-title">
-  <div class="my-section-heading"><div><p class="my-section-mini">// ИГРОВЫЕ ВСЕЛЕННЫЕ</p><h2 id="worlds-title">ПОДДЕРЖИВАЕМЫЕ <em>МИРЫ</em></h2></div><p>Выберите систему и создайте персонажа по её учебной модели.</p><a class="my-link" href="{{ url_for('games_page') }}">Весь каталог <span aria-hidden="true">→</span></a></div>
+  <div class="my-section-heading"><div><p class="my-section-mini">// ИГРОВЫЕ ВСЕЛЕННЫЕ</p><h2 id="worlds-title">ПОДДЕРЖИВАЕМЫЕ <em>МИРЫ</em></h2></div><p>{{ available_games|length }} игровых мира открыты уже сейчас. Остальные появятся позже — пока мы готовим для них образы героев.</p><a class="my-link" href="{{ url_for('games_page') }}">Весь каталог <span aria-hidden="true">→</span></a></div>
   <div class="my-glass my-world-carousel" data-carousel data-autoplay="6500" aria-label="Карусель игровых миров">
     <button class="my-round-arrow" type="button" data-carousel-prev aria-label="Предыдущие игры">‹</button>
     <div class="my-world-track" data-carousel-track tabindex="0">
       {% for game in games %}
-      <a href="{{ url_for('generator',slug=game.slug) }}" class="my-world-card {% if loop.index == 3 %}is-highlighted{% endif %}">
+      <a href="{{ url_for('generator',slug=game.slug) }}" class="my-world-card {% if not game_is_available(game.slug) %}is-locked{% elif loop.index == 3 %}is-highlighted{% endif %}" aria-label="{{ 'Создать персонажа для' if game_is_available(game.slug) else 'Скоро: узнать об игре' }} {{ game.title }}">
         <img src="{{ url_for('static',filename='images/worlds/' + game.slug + '.webp') }}" alt="Иллюстрация игровой атмосферы: {{ game.title }}" loading="lazy">
         <span class="my-world-kind">{{ 'Настольная RPG' if game.group=='tabletop' else 'Компьютерная RPG' }}</span>
+        {% if game_is_available(game.slug) %}
+        <span class="launch-world-status launch-world-status--ready">✦ Доступно</span>
+        {% else %}
+        <span class="launch-world-lock"><img src="{{ url_for('static',filename='images/mythoria-lock.svg') }}" alt="" width="36" height="36"><b>СКОРО</b></span>
+        {% endif %}
         <span class="my-world-name">{{ game.title }}</span>
       </a>
       {% endfor %}
@@ -52,7 +57,7 @@
 
 <section class="shell my-section my-reveal" id="heroes" aria-labelledby="heroes-title">
   <div class="my-section-heading"><div><p class="my-section-mini">// ВДОХНОВЕНИЕ</p><h2 id="heroes-title">ВЫБЕРИТЕ <em>ГЕРОЯ</em></h2></div><p>Познакомьтесь с образами персонажей и создайте собственного.</p></div>
-  <div class="my-glass my-heroes-panel" data-showcase>
+  <div class="my-glass my-heroes-panel" data-showcase data-ready-games="{{ available_games|map(attribute='slug')|join(',') }}">
     <div class="my-showcase-main">
       <div class="my-showcase-info"><p class="my-pill">ПРИМЕР ПЕРСОНАЖА</p><h3 data-hero-name>КАЙДРЕН</h3><span data-hero-role>Воин · Защитник</span><p data-hero-story>Страж пограничных земель, научившийся обращать силу магии себе на помощь.</p><a class="my-link my-showcase-link" data-hero-link href="{{ url_for('generator',slug='dnd') }}">Создать похожего персонажа <span aria-hidden="true">→</span></a></div>
       <div class="my-coverflow-wrap">
@@ -80,9 +85,9 @@
 </section>
 
 <section class="shell my-section my-reveal" id="inside" aria-labelledby="inside-title">
-  <div class="my-section-heading"><div><p class="my-section-mini">// ПОДРОБНОСТИ ПРОЕКТА</p><h2 id="inside-title">ВНУТРИ <em>MYTHORIA</em></h2></div><p>Всё, что уже доступно в этой версии приложения.</p></div>
+  <div class="my-section-heading"><div><p class="my-section-mini">// ПОДРОБНОСТИ ПРОЕКТА</p><h2 id="inside-title">ВНУТРИ <em>MYTHORIA</em></h2></div><p>Четыре системы доступны для создания персонажей. Остальные показываем как планы развития.</p></div>
   <div class="my-inside-grid">
-    <article class="my-glass my-inside-feature"><div class="my-inside-art" aria-hidden="true"></div><div><span class="my-pill">16 ИГРОВЫХ СИСТЕМ</span><h3>Разные миры, разные истории</h3><p>Выбирайте настольные или компьютерные RPG. Для каждой системы предусмотрены свои настройки генерации.</p><a class="my-button my-button-cyan my-button-small" href="{{ url_for('games_page') }}">Перейти к играм <span aria-hidden="true">→</span></a></div></article>
+    <article class="my-glass my-inside-feature"><div class="my-inside-art" aria-hidden="true"></div><div><span class="my-pill">{{ available_games|length }} ДОСТУПНЫХ ИГРЫ · {{ coming_soon_games|length }} В ПЛАНАХ</span><h3>Разные миры, разные истории</h3><p>Выбирайте настольные или компьютерные RPG. Для каждой системы предусмотрены свои настройки генерации.</p><a class="my-button my-button-cyan my-button-small" href="{{ url_for('games_page') }}">Перейти к играм <span aria-hidden="true">→</span></a></div></article>
     <div class="my-inside-list"><a href="{{ url_for('characters') }}" class="my-glass my-news-item"><span class="my-news-icon">◇</span><span><b>Личная коллекция</b><small>Сохраняйте и изменяйте созданных героев</small></span><span aria-hidden="true">→</span></a><a href="{{ url_for('statistics') }}" class="my-glass my-news-item"><span class="my-news-icon">▥</span><span><b>Статистика</b><small>Просматривайте данные по персонажам</small></span><span aria-hidden="true">→</span></a><a href="{{ url_for('help_page') }}" class="my-glass my-news-item"><span class="my-news-icon">✧</span><span><b>Справка</b><small>Узнайте, как пользоваться приложением</small></span><span aria-hidden="true">→</span></a></div>
   </div>
 </section>
