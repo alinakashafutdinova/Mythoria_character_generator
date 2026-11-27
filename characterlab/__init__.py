@@ -203,6 +203,11 @@ def create_app(test_config=None):
     @app.get('/help')
     def help_page(): return render_template('help.html')
 
+    @app.errorhandler(403)
+    def forbidden(err):
+        return render_template('error.html',title='Мир пока закрыт',
+                               message='Генерация этой игры пока недоступна. Выберите одну из открытых игровых систем.'),403
+
     @app.errorhandler(404)
     def notfound(err): return render_template('error.html',title='Страница не найдена',message='Проверьте адрес или перейдите в каталог игр.'),404
     @app.errorhandler(400)

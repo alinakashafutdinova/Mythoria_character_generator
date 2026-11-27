@@ -29,7 +29,7 @@
 </section>
 <div class="in-catalog-count" aria-live="polite"><h2>ИГРОВЫЕ <em>МИРЫ</em></h2><span data-visible-count>Найдено игр: {{ games|length }}</span></div>
 <div class="in-catalog-grid">
-{% for game in games %}
+{% for game in available_games + coming_soon_games %}
 {% set ready=game_is_available(game.slug) %}
 <article class="in-glass in-game-card game-card my-reveal {% if not ready %}launch-game-card--locked{% else %}launch-game-card--ready{% endif %}" data-group="{{ game.group }}" data-game-title="{{ game.title|lower }}" data-availability="{{ 'available' if ready else 'soon' }}">
   <a class="in-game-visual" href="{{ url_for('generator',slug=game.slug) }}" aria-label="{{ 'Создать персонажа для ' if ready else 'Анонс: ' }}{{ game.title }}">

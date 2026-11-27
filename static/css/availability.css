@@ -5,7 +5,7 @@
 .launch-catalog-sigil img{width:92px;filter:drop-shadow(0 0 17px #53ceff9a)}
 .launch-progress{position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1px 1fr;gap:30px;padding:28px 36px 35px;margin:0 0 28px;background:linear-gradient(115deg,#0a2248de,#170f40db 48%,#071f3ee5)!important}
 .launch-progress-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 7% 0%,#22e1f51b,transparent 55%),radial-gradient(ellipse at 98% 100%,#ff4bc21b,transparent 58%);pointer-events:none}
-.launch-progress>div:not(.launch-progress-glow){position:relative}.launch-progress-eyebrow{font:800 10px/1.5 inherit;letter-spacing:.19em;color:#7eeeff}.launch-progress>div:nth-child(3) .launch-progress-eyebrow{color:#f8a0dc}
+.launch-progress>div:not(.launch-progress-glow){position:relative}.launch-progress-eyebrow{font-family:inherit;font-weight:800;font-size:10px;line-height:1.5;letter-spacing:.19em;color:#7eeeff}.launch-progress>div:nth-child(4) .launch-progress-eyebrow{color:#f8a0dc}
 .launch-progress strong{display:block;margin-top:5px;font-size:36px;font-weight:900;letter-spacing:-.05em;color:#f1f9ff;text-shadow:0 0 24px #4bc7ff75}.launch-progress strong small{font-size:14px;font-weight:650;letter-spacing:0;color:#b9d1ed}.launch-progress p{max-width:350px;color:#bcd3ed;font-size:12px;line-height:1.6;margin:7px 0 0}
 .launch-progress-divider{width:1px;background:linear-gradient(transparent,#7ce6ff70,transparent)}
 .launch-progress-line{position:absolute!important;bottom:0;left:0;right:0;height:3px;background:#6bbaff36}.launch-progress-line i{display:block;height:100%;background:linear-gradient(90deg,#32deff,#e568e9);box-shadow:0 0 16px #71edff;transition:width .7s}

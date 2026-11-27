@@ -37,7 +37,7 @@
   <div class="my-glass my-world-carousel" data-carousel data-autoplay="6500" aria-label="Карусель игровых миров">
     <button class="my-round-arrow" type="button" data-carousel-prev aria-label="Предыдущие игры">‹</button>
     <div class="my-world-track" data-carousel-track tabindex="0">
-      {% for game in games %}
+      {% for game in available_games + coming_soon_games %}
       <a href="{{ url_for('generator',slug=game.slug) }}" class="my-world-card {% if not game_is_available(game.slug) %}is-locked{% elif loop.index == 3 %}is-highlighted{% endif %}" aria-label="{{ 'Создать персонажа для' if game_is_available(game.slug) else 'Скоро: узнать об игре' }} {{ game.title }}">
         <img src="{{ url_for('static',filename='images/worlds/' + game.slug + '.webp') }}" alt="Иллюстрация игровой атмосферы: {{ game.title }}" loading="lazy">
         <span class="my-world-kind">{{ 'Настольная RPG' if game.group=='tabletop' else 'Компьютерная RPG' }}</span>
