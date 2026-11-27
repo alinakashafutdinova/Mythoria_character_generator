@@ -68,7 +68,7 @@ for i,b in enumerate(['Спроектировать 16 игровых профи
     text(sl,1.05,3.09+i*.69,11.2,.38,f'{i+1:02d}   {b}',16,WHITE)
 
 sl=slide('Шестнадцать игровых систем')
-card(sl,.74,1.95,5.8,4.35,'8 настольных RPG','Dungeons & Dragons 5e\nPathfinder 2e\nCall of Cthulhu 7e\nCyberpunk RED\nVampire: The Masquerade V5')
+card(sl,.74,1.95,5.8,4.35,'8 настольных RPG','Dungeons & Dragons 5e\nPathfinder 2e\nCall of Cthulhu 7e\nCyberpunk RED\nVampire: The Masquerade V5\nWarhammer Fantasy Roleplay\nStarfinder\nShadowrun')
 card(sl,6.79,1.95,5.8,4.35,'8 компьютерных RPG',"Darkest Dungeon\nBattle Brothers\nDisco Elysium\nGrim Dawn\nLast Epoch\nDiablo II: Resurrected\nPath of Exile\nTitan Quest")
 text(sl,.83,6.55,11.5,.28,'Важно: игровые правила адаптированы для учебного генератора, не являются официальными листами.',11,MUTED)
 
