@@ -3,7 +3,7 @@ from tests.conftest import csrf
 
 
 def test_site_pages(client):
-    for path in ['/', '/games', '/characters','/statistics','/help','/generate/dnd','/generate/bg3']:
+    for path in ['/', '/games', '/characters','/statistics','/help','/generate/dnd','/generate/darkest']:
         assert client.get(path).status_code==200
     assert client.get('/generate/absent').status_code==404
 
@@ -124,9 +124,9 @@ def test_character_portraits_and_new_images(client, app):
 def test_portrait_is_stable_across_preview_and_saved_profile(client, app):
     from characterlab.portraits import portrait_for
     from characterlab import db as database
-    client.get('/generate/bg3')
+    client.get('/generate/dnd')
     token = csrf(client)
-    response = client.post('/generate/bg3', data={'csrf': token,'origin':'Эльф','role':'Воин','level':'2'})
+    response = client.post('/generate/dnd', data={'csrf': token,'origin':'Эльф','role':'Воин','level':'2'})
     assert response.status_code == 200
     with client.session_transaction() as sess:
         result = sess['preview'].copy()

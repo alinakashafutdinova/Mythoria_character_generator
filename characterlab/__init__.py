@@ -95,7 +95,7 @@ def create_app(test_config=None):
             name=request.form.get('name','').strip()
             bio=request.form.get('bio','').strip()
             new_art=request.form.get('portrait_path',item['portrait_path'])
-            if not is_valid_portrait(item['game_slug'],new_art):
+            if not (is_valid_portrait(item['game_slug'],new_art) or (item['game_slug'] not in BY_SLUG and new_art == item['portrait_path'])):
                 flash('Выберите иллюстрацию из галереи вашей игры','error')
                 return render_template('edit.html',item=item,stats=stats),400
             if not 1<=len(name)<=80 or len(bio)>1000:

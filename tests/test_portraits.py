@@ -33,14 +33,14 @@ def test_generated_portrait_is_allowed_and_repeatable(game):
 
 
 def test_a_chosen_portrait_is_saved_and_not_changed_by_renaming(client,app):
-    client.get('/generate/bg3')
+    client.get('/generate/dnd')
     token=csrf(client)
-    response=client.post('/generate/bg3',data={'csrf':token,'origin':'Эльф','role':'Воин','level':'3'})
+    response=client.post('/generate/dnd',data={'csrf':token,'origin':'Эльф','role':'Воин','level':'3'})
     assert response.status_code==200
     assert 'v5-portrait-picker' in response.get_data(as_text=True)
     with client.session_transaction() as s:
         preview=s['preview']
-    options=portrait_choices('bg3',preview['role'],preview['origin'])
+    options=portrait_choices('dnd',preview['role'],preview['origin'])
     selected=next(item for item in options if item != preview['portrait_path'])
     res=client.post('/characters/save',data={'csrf':token,'portrait_path':selected},follow_redirects=True)
     assert res.status_code==200

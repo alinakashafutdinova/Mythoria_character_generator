@@ -21,12 +21,19 @@ def test_invalid_parameters():
     with pytest.raises(InvalidGeneration): generate('dnd',role='Тёмный маг')
     with pytest.raises(InvalidGeneration): generate('dnd',level=-1)
 
-def test_fallout_special_points():
+def test_disco_profile_points():
     for i in range(40):
-        assert sum(generate('fallout',seed=i)['stats'].values())==28
+        hero=generate('disco',seed=i)
+        assert sum(hero['stats'].values())==12
+        assert all(1<=x<=6 for x in hero['stats'].values())
 
 def test_vampire_dots():
     assert sum(generate('vampire',seed=1)['stats'].values())==22
 
-def test_elden_initial_stats():
-    assert generate('elden',role='Самурай',seed=1)['stats']['Ловкость']==15
+def test_removed_games_are_disabled():
+    for slug in ('fallout','skyrim','elden','bg3','divinity','dragonage','wow','diablo'):
+        with pytest.raises(InvalidGeneration): generate(slug)
+
+def test_new_character_builds():
+    assert set(generate('poe',seed=12)['stats'])=={'Сила','Ловкость','Интеллект'}
+    assert generate('darkest',seed=12)['role'] in ('Крестоносец','Чумной доктор','Охотник за головами','Весталка','Разбойник','Оккультист')
