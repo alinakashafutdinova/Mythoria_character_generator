@@ -36,6 +36,20 @@ GAMES = [
 ]
 BY_SLUG = {g.slug:g for g in GAMES}
 
+# На защите полностью демонстрируем четыре игры.
+# Остальные остаются в каталоге как анонсы, пока для них не готовы иллюстрации.
+AVAILABLE_GAME_SLUGS = frozenset(('dnd', 'pathfinder', 'darkest', 'diablo2'))
+
+def game_is_available(slug: str) -> bool:
+    return slug in AVAILABLE_GAME_SLUGS
+
+def coming_soon_games():
+    return tuple(game for game in GAMES if not game_is_available(game.slug))
+
+def available_games():
+    return tuple(game for game in GAMES if game_is_available(game.slug))
+
+
 ROLE_PRIMARY = {
  'Воин': ('Сила','Выносливость','Телосложение'), 'Волшебник': ('Интеллект','Магия'),
  'Плут': ('Ловкость',), 'Жрец': ('Мудрость','Вера'), 'Следопыт': ('Ловкость','Восприятие'),
