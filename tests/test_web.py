@@ -147,3 +147,31 @@ def test_art_files_are_different(client):
     pictures = [client.get(path) for path in paths]
     assert all(response.status_code == 200 for response in pictures)
     assert len({response.data for response in pictures}) == 3
+
+
+def test_removed_game_is_not_in_catalog_but_saved_hero_remains(client, app):
+    """Старые персонажи не удаляются при смене списка игр."""
+    client.get('/games')
+    with app.app_context():
+        conn=database.get_db()
+        with conn:
+            conn.execute("INSERT INTO games(slug,title,game_group,edition,description) VALUES(?,?,?,?,?)",
+                         ('fallout','Fallout 4','video','архив','архивный персонаж'))
+            gid=conn.execute("SELECT id FROM games WHERE slug='fallout'").fetchone()['id']
+            conn.execute("INSERT INTO game_options(game_id,option_group,label) VALUES(?,?,?)",(gid,'origin','Поселенец'))
+            conn.execute("INSERT INTO game_options(game_id,option_group,label) VALUES(?,?,?)",(gid,'role','Снайпер'))
+            oid=conn.execute("SELECT id FROM game_options WHERE game_id=? AND option_group='origin'",(gid,)).fetchone()['id']
+            rid=conn.execute("SELECT id FROM game_options WHERE game_id=? AND option_group='role'",(gid,)).fetchone()['id']
+            conn.execute("INSERT INTO characters(game_id,name,origin_option_id,role_option_id,level,bio,portrait_path,visual_seed) VALUES(?,?,?,?,?,?,?,?)",
+                         (gid,'Архивный герой',oid,rid,1,'Старая запись','images/portraits/wasteland-scout.webp',11))
+            cid=conn.execute("SELECT MAX(id) AS id FROM characters").fetchone()['id']
+    assert client.get('/generate/fallout').status_code==404
+    assert 'Fallout 4' not in client.get('/games').get_data(as_text=True)
+    assert client.get('/characters/'+str(cid)).status_code==200
+    assert client.get('/characters/'+str(cid)+'/edit').status_code==200
+    assert client.get('/characters/'+str(cid)+'/export').json['game']=='Fallout 4'
+    token=csrf(client)
+    edited=client.post(f'/characters/{cid}/edit',
+                       data={'csrf':token,'name':'Архивный герой 2','bio':'Сохранённая история',
+                             'portrait_path':'images/portraits/wasteland-scout.webp'})
+    assert edited.status_code==302
