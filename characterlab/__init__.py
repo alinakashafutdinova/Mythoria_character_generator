@@ -6,7 +6,7 @@ import mimetypes
 from pathlib import Path
 from functools import wraps
 from flask import Flask,render_template,request,redirect,url_for,flash,abort,session,g,Response
-from .catalog import GAMES, BY_SLUG
+from .catalog import GAMES, BY_SLUG, game_is_available, available_games, coming_soon_games
 from .engine import generate,InvalidGeneration
 from .portraits import portrait_for, portrait_choices, portrait_style, is_valid_portrait
 from . import db as database
@@ -31,7 +31,12 @@ def create_app(test_config=None):
             if not secrets.compare_digest(request.form.get('csrf',''),session['csrf']): abort(400,'Неверный защитный токен формы')
 
     @app.context_processor
-    def common(): return {'csrf_token':session.get('csrf',''),'games':GAMES,'portrait_for':portrait_for,'portrait_choices':portrait_choices,'portrait_style':portrait_style}
+    def common():
+        return {'csrf_token':session.get('csrf',''), 'games':GAMES,
+                'available_games':available_games(), 'coming_soon_games':coming_soon_games(),
+                'game_is_available':game_is_available,
+                'portrait_for':portrait_for,'portrait_choices':portrait_choices,
+                'portrait_style':portrait_style}
 
     @app.get('/')
     def index():
@@ -45,6 +50,11 @@ def create_app(test_config=None):
     def generator(slug):
         game=BY_SLUG.get(slug)
         if not game: abort(404)
+        if not game_is_available(slug):
+            # Закрытые игры остаются в каталоге, но не принимают генерацию.
+            if request.method != 'GET': abort(403)
+            session.pop('preview', None)
+            return render_template('coming_soon.html', game=game)
         result=None
         if request.method=='POST':
             try:
@@ -59,6 +69,9 @@ def create_app(test_config=None):
     def save():
         p=session.pop('preview',None)
         if not p: flash('Сначала сгенерируйте персонажа','error');return redirect(url_for('games_page'))
+        if not game_is_available(p.get('game_slug', '')):
+            flash('Эта игровая система появится позже', 'error')
+            return redirect(url_for('games_page'))
         requested_art=request.form.get('portrait_path','')
         if requested_art:
             if not is_valid_portrait(p['game_slug'],requested_art):
