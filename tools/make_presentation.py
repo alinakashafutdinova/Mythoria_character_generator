@@ -54,7 +54,7 @@ text(sl,.7,2.25,8,1.3,'Браузерный генератор\nигровых �
 text(sl,.73,4.43,8,.9,'Python · Flask · SQLite · HTML / CSS / JavaScript',17,ACC)
 rect(sl,9.2,2,3.2,3.6,(39,30,65))
 text(sl,9.7,2.55,2.2,1.5,'✦',104,ACC,True,PP_ALIGN.CENTER)
-text(sl,9.55,5.01,2.5,.4,'10 игровых систем',16,WHITE,True,PP_ALIGN.CENTER)
+text(sl,9.55,5.01,2.5,.4,'16 игровых систем',16,WHITE,True,PP_ALIGN.CENTER)
 
 sl=slide('Актуальность проекта')
 card(sl,.75,2,3.75,3.7,'Проблема','Создание персонажей вручную занимает время и требует учёта правил.',18)
@@ -63,13 +63,13 @@ card(sl,8.88,2,3.75,3.7,'Результат','Готовые карточки г
 
 sl=slide('Цель и основные задачи')
 text(sl,.8,1.93,11.7,.85,'Цель — разработать локальное веб-приложение для создания и хранения персонажей ролевых игр.',22,WHITE,True)
-for i,b in enumerate(['Спроектировать 10 игровых профилей и алгоритмы генерации','Разработать пользовательский интерфейс и CRUD','Спроектировать связанную базу SQLite','Создать диаграммы, SQL-запросы, тесты и инструкции']):
+for i,b in enumerate(['Спроектировать 16 игровых профилей и алгоритмы генерации','Разработать пользовательский интерфейс и CRUD','Спроектировать связанную базу SQLite','Создать диаграммы, SQL-запросы, тесты и инструкции']):
     rect(sl,.8,3.0+i*.69,11.7,.55)
     text(sl,1.05,3.09+i*.69,11.2,.38,f'{i+1:02d}   {b}',16,WHITE)
 
-sl=slide('Десять игровых систем')
-card(sl,.74,1.95,5.8,4.35,'5 настольных RPG','Dungeons & Dragons 5e\nPathfinder 2e\nCall of Cthulhu 7e\nCyberpunk RED\nVampire: The Masquerade V5')
-card(sl,6.79,1.95,5.8,4.35,'5 компьютерных RPG',"Baldur’s Gate 3\nDivinity: Original Sin 2\nThe Elder Scrolls V: Skyrim\nElden Ring\nFallout 4")
+sl=slide('Шестнадцать игровых систем')
+card(sl,.74,1.95,5.8,4.35,'8 настольных RPG','Dungeons & Dragons 5e\nPathfinder 2e\nCall of Cthulhu 7e\nCyberpunk RED\nVampire: The Masquerade V5')
+card(sl,6.79,1.95,5.8,4.35,'8 компьютерных RPG',"Darkest Dungeon\nBattle Brothers\nDisco Elysium\nGrim Dawn\nLast Epoch\nDiablo II: Resurrected\nPath of Exile\nTitan Quest")
 text(sl,.83,6.55,11.5,.28,'Важно: игровые правила адаптированы для учебного генератора, не являются официальными листами.',11,MUTED)
 
 sl=slide('Возможности приложения')
@@ -103,7 +103,7 @@ for i,(a,b) in enumerate([('01','JOIN: персонажи, игры и роли'
     rect(sl,x,y,5.65,1.03);text(sl,x+.2,y+.25,.53,.45,a,18,ACC,True);text(sl,x+.82,y+.21,4.6,.62,b,15,WHITE)
 
 sl=slide('Проведённые проверки и ограничения')
-card(sl,.75,1.95,5.7,3.6,'Подтверждено','Синтаксис Python\n10 генераторов\nSQLite: 7 связанных таблиц\n6 SQL-запросов на демо-БД')
+card(sl,.75,1.95,5.7,3.6,'Подтверждено','Синтаксис Python\n16 генераторов\nSQLite: 7 связанных таблиц\n6 SQL-запросов на демо-БД')
 card(sl,6.75,1.95,5.7,3.6,'Ещё проверить на MacBook','Установка Flask и запуск браузера\nПолный pytest\nПользовательский интерфейс\nWindows .exe отдельно в Windows')
 text(sl,.84,6.0,11.3,.5,'Результаты тестов не преувеличиваются: полная HTTP-проверка пока не проведена.',13,MUTED)
 
