@@ -91,3 +91,16 @@ def test_old_database_migrates_without_deleting_people(tmp_path):
     database.init_db(db_path)
     with database.connect(db_path) as conn:
         assert conn.execute('SELECT COUNT(*) FROM games').fetchone()[0]==16
+
+
+def test_removed_unused_games_are_cleaned_up(tmp_path):
+    """Устаревшие игры без сохранённых героев исчезают после инициализации."""
+    path=tmp_path/'retired.sqlite3'
+    database.init_db(path)
+    with database.connect(path) as conn:
+        conn.execute("INSERT INTO games(slug,title,game_group,edition,description) VALUES(?,?,?,?,?)",
+                     ('fallout','Старая игра','video','архив','не используется'))
+    database.init_db(path)
+    with database.connect(path) as conn:
+        assert conn.execute("SELECT COUNT(*) FROM games").fetchone()[0]==16
+        assert conn.execute("SELECT COUNT(*) FROM games WHERE slug='fallout'").fetchone()[0]==0
