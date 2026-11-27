@@ -41,6 +41,12 @@ def init_db(path):
                 conn.executemany('INSERT OR IGNORE INTO abilities(game_id,label) VALUES(?,?)',[(gid,a) for a in ROLE_SKILLS.get(role,[])])
             lo,hi=({'cthulhu':(0,99),'cyberpunk':(2,8),'vampire':(1,5),'warhammer':(1,99),'starfinder':(1,30),'shadowrun':(1,10),'darkest':(0,100),'battlebrothers':(1,200),'disco':(1,6),'grimdawn':(1,200),'lastepoch':(1,100),'diablo2':(1,200),'poe':(1,200),'titanquest':(1,200)}.get(game.slug,(1,30)))
             conn.executemany('INSERT OR IGNORE INTO attribute_definitions(game_id,label,min_value,max_value) VALUES(?,?,?,?)',[(gid,x,lo,hi) for x in game.stats])
+        # Убираем старые игровые системы, если в них нет сохранённых героев.
+        # Если персонажи уже существуют, оставляем их вместе с историей и связями.
+        allowed=tuple(game.slug for game in GAMES)
+        placeholders=','.join('?' for _ in allowed)
+        conn.execute(f'DELETE FROM games WHERE slug NOT IN ({placeholders}) '
+                     'AND id NOT IN (SELECT game_id FROM characters)',allowed)
         conn.commit()
 
 def list_characters(db,game_slug='',q='',favorite=False,order='new'):
