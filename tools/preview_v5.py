@@ -23,21 +23,21 @@ env=Environment(loader=FileSystemLoader(str(ROOT/'templates')),autoescape=select
 env.globals.update(url_for=url_for,portrait_for=portraits.portrait_for,
     portrait_choices=portraits.portrait_choices,portrait_style=portraits.portrait_style,
     get_flashed_messages=lambda **kwargs:[])
-hero=engine.generate('bg3',seed=791,role='Воин',origin='Эльф',level=3)
+hero=engine.generate('dnd',seed=791,role='Воин',origin='Эльф',level=3)
 class Result(dict):
     __getattr__=dict.get
 sample=Result(hero)
 common={'games':catalog.GAMES,'csrf_token':'DEMO','count':6}
 items=[]
-for idx,slug in enumerate(('bg3','cyberpunk','dnd','cthulhu')):
+for idx,slug in enumerate(('dnd','cyberpunk','dnd','cthulhu')):
     result=engine.generate(slug,seed=idx+12)
     item={'id':idx+1,'game_slug':slug,'game_title':catalog.BY_SLUG[slug].title,
           'favorite': idx==1,'created_at':'2026-11-26 10:00:00',**result}
     items.append(Result(item))
 for filename,target,vars,endpoint in [
     ('index.html','preview-v5-home.html',{},'index'),
-    ('generator.html','preview-v5-generator.html',{'game':catalog.BY_SLUG['bg3'],'result':sample,
-      'stat_max':{s:20 for s in catalog.BY_SLUG['bg3'].stats}},'generator'),
+    ('generator.html','preview-v5-generator.html',{'game':catalog.BY_SLUG['dnd'],'result':sample,
+      'stat_max':{s:20 for s in catalog.BY_SLUG['dnd'].stats}},'generator'),
     ('characters.html','preview-v5-collection.html',{'rows':items,'filters':SimpleNamespace(q='',game_slug='',favorite=False,order='new')},'characters')]:
     context={**common,**vars,'request':SimpleNamespace(endpoint=endpoint,form={})}
     output=env.get_template(filename).render(**context)
