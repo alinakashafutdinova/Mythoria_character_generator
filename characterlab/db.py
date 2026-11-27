@@ -39,7 +39,7 @@ def init_db(path):
                 conn.executemany('INSERT OR IGNORE INTO game_options(game_id,option_group,label) VALUES(?,?,?)',[(gid,group,x) for x in items])
             for role in game.roles:
                 conn.executemany('INSERT OR IGNORE INTO abilities(game_id,label) VALUES(?,?)',[(gid,a) for a in ROLE_SKILLS.get(role,[])])
-            lo,hi=({'cthulhu':(0,99),'cyberpunk':(2,8),'vampire':(1,5),'fallout':(1,10),'skyrim':(100,200),'elden':(1,99),'warhammer':(1,99),'starfinder':(1,30),'shadowrun':(1,10),'dragonage':(1,30),'wow':(1,40),'diablo':(1,30)}.get(game.slug,(1,30)))
+            lo,hi=({'cthulhu':(0,99),'cyberpunk':(2,8),'vampire':(1,5),'warhammer':(1,99),'starfinder':(1,30),'shadowrun':(1,10),'darkest':(0,100),'battlebrothers':(1,200),'disco':(1,6),'grimdawn':(1,200),'lastepoch':(1,100),'diablo2':(1,200),'poe':(1,200),'titanquest':(1,200)}.get(game.slug,(1,30)))
             conn.executemany('INSERT OR IGNORE INTO attribute_definitions(game_id,label,min_value,max_value) VALUES(?,?,?,?)',[(gid,x,lo,hi) for x in game.stats])
         conn.commit()
 
