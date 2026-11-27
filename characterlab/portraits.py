@@ -49,14 +49,14 @@ GAME_ART = {
     'warhammer': ('frost-berserker', 'rift-guardian', 'hero-05', 'hero-11', 'hero-14'),
     'starfinder': ('astral-oracle', 'neon-runner', 'hero-06', 'hero-15'),
     'shadowrun': ('neon-runner', 'hero-07', 'hero-03', 'hero-14'),
-    'bg3': ('astral-oracle', 'forest-warden', 'rift-guardian', 'hero-08', 'hero-09', 'hero-00'),
-    'divinity': ('forest-warden', 'astral-oracle', 'hero-09', 'hero-08', 'hero-13'),
-    'skyrim': ('frost-berserker', 'forest-warden', 'hero-10', 'hero-05', 'hero-09'),
-    'elden': ('rift-guardian', 'blood-noble', 'hero-11', 'hero-05', 'hero-13'),
-    'fallout': ('wasteland-scout', 'neon-runner', 'hero-12', 'hero-07'),
-    'dragonage': ('rift-guardian', 'astral-oracle', 'forest-warden', 'hero-13', 'hero-00'),
-    'wow': ('frost-berserker', 'forest-warden', 'hero-14', 'hero-10', 'hero-01'),
-    'diablo': ('blood-noble', 'arcane-scholar', 'rift-guardian', 'hero-11', 'hero-14'),
+    'darkest': ('blood-noble', 'arcane-scholar', 'hero-11', 'hero-04', 'hero-05'),
+    'battlebrothers': ('frost-berserker', 'rift-guardian', 'hero-05', 'hero-10', 'hero-00'),
+    'disco': ('arcane-scholar', 'hero-02', 'hero-07', 'wasteland-scout', 'hero-12'),
+    'grimdawn': ('blood-noble', 'rift-guardian', 'hero-11', 'arcane-scholar', 'hero-05'),
+    'lastepoch': ('astral-oracle', 'forest-warden', 'frost-berserker', 'hero-01', 'hero-10'),
+    'diablo2': ('rift-guardian', 'blood-noble', 'frost-berserker', 'hero-00', 'hero-13'),
+    'poe': ('rift-guardian', 'arcane-scholar', 'hero-11', 'hero-09', 'hero-00'),
+    'titanquest': ('frost-berserker', 'forest-warden', 'hero-00', 'hero-09', 'hero-13'),
 }
 
 # Совместимость со старыми тестами и кодом: пути именно из локальной галереи.
@@ -106,7 +106,7 @@ def is_valid_portrait(slug: str, path: str) -> bool:
 def portrait_for(slug: str, name: str = '', origin: str = '', role: str = '',
                  *, seed: int | None = None, selected: str = '') -> str:
     """Вернуть допустимое изображение; конкретный выбор лучше сохранять в БД."""
-    if selected and is_valid_portrait(slug, selected):
+    if selected and (is_valid_portrait(slug, selected) or (slug not in GAME_ART and selected in {art[0] for art in ART.values()})):
         return selected
     paths = portrait_choices(slug, role, origin)
     if not paths:
