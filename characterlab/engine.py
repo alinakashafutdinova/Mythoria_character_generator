@@ -1,4 +1,4 @@
-"""Шестнадцать автономных стратегий генерации персонажей для учебного Mythoria.
+"""Шестнадцать стратегий генерации персонажей для учебного Mythoria.
 
 Это авторские облегчённые модели, а не валидатор официальных листов персонажа.
 """
@@ -26,16 +26,6 @@ def _dnd(game, role, rng):
     priority = _priority(game.stats,role)
     order = priority + [s for s in game.stats if s not in priority]
     return dict(zip(order, values))
-
-def _bg3(game, role, rng):
-    # Упрощённый набор очков: не воспроизводит UI/стоимость point-buy в BG3.
-    numbers = [15,14,13,12,10,8]
-    priority = _priority(game.stats,role)
-    order = priority + [s for s in game.stats if s not in priority]
-    output = dict(zip(order,numbers))
-    output[order[0]] += 2
-    output[order[1]] += 1
-    return output
 
 def _pathfinder(game, role, rng):
     # Упрощённый тематический набор boosts, не официальный расчёт PF2e.
@@ -66,42 +56,6 @@ def _vampire(game, role, rng):
             out[s],out[target]=out[target],out[s]
     return out
 
-def _divinity(game, role, rng):
-    out={s:10 for s in game.stats}
-    p=_priority(game.stats,role)
-    out[p[0] if p else 'Интеллект'] += 3
-    out['Память'] += rng.randint(0,2)
-    return out
-
-def _skyrim(game, role, rng):
-    out={'Здоровье':100,'Магия':100,'Запас сил':100}
-    if role in ('Воин','Лучник','Вор'): out['Запас сил']+=20
-    elif role in ('Маг','Боевой маг'): out['Магия']+=20
-    return out
-
-ELDEN_BASE={
- 'Бродяга':(15,10,11,14,13,9,9,7),
- 'Воин':(11,12,11,10,16,10,8,9),
- 'Герой':(14,9,12,16,9,7,8,11),
- 'Астролог':(9,15,9,8,12,16,7,9),
- 'Самурай':(12,11,13,12,15,9,8,8),
-}
-def _elden(game, role, rng):
-    return dict(zip(game.stats, ELDEN_BASE[role]))
-
-def _fallout(game, role, rng):
-    # 7 базовых очков + 21 на распределение; диапазон 1..10.
-    out={s:1 for s in game.stats}
-    preferred=_priority(game.stats,role)
-    pool=21
-    while pool:
-        valid=[s for s in game.stats if out[s]<10]
-        weighted=preferred*3+valid
-        s=rng.choice([v for v in weighted if v in valid])
-        out[s]+=1;pool-=1
-    return out
-
-
 def _warhammer(game, role, rng):
     # Approximate profession-oriented d100 values: not official career advancement.
     return {name:min(75, rng.randint(23,45)+(rng.randint(8,18) if name in _priority(game.stats,role) else 0)) for name in game.stats}
@@ -118,24 +72,68 @@ def _shadowrun(game, role, rng):
     for s in _priority(game.stats,role): output[s]=rng.randint(5,7)
     return output
 
-def _dragonage(game, role, rng):
-    out={s:rng.randint(10,16) for s in game.stats}
-    for s in _priority(game.stats,role): out[s]+=4
-    return out
 
-def _wow(game, role, rng):
-    out={s:rng.randint(10,20) for s in game.stats}
-    primary={'Воин':'Сила','Маг':'Интеллект','Охотник':'Ловкость','Жрец':'Интеллект','Паладин':'Сила'}.get(role,'Сила')
-    out[primary]+=10
-    return out
+def _darkest(game, role, rng):
+    values={'Здоровье':rng.randint(20,43), 'Уклонение':rng.randint(0,22),
+            'Скорость':rng.randint(2,9), 'Точность':rng.randint(64,85),
+            'Критический шанс':rng.randint(2,14), 'Стрессоустойчивость':rng.randint(18,54)}
+    for stat in _priority(game.stats, role):
+        values[stat]=min(100,values[stat]+rng.randint(4,10))
+    return values
 
-def _diablo(game, role, rng):
-    out={s:rng.randint(6,12) for s in game.stats}
-    primary={'Варвар':'Сила','Чародей':'Интеллект','Некромант':'Интеллект','Разбойник':'Ловкость','Друид':'Воля'}.get(role,'Воля')
-    out[primary]+=6
-    return out
+def _battlebrothers(game, role, rng):
+    values={'Здоровье':rng.randint(50,78),'Выносливость':rng.randint(83,112),
+            'Решимость':rng.randint(25,49),'Инициатива':rng.randint(80,121),
+            'Ближняя атака':rng.randint(42,69),'Дальняя атака':rng.randint(32,67),
+            'Защита':rng.randint(2,20)}
+    for stat in _priority(game.stats,role):
+        values[stat]=min(200,values[stat]+rng.randint(5,13))
+    return values
 
-STRATEGIES = {'dnd':_dnd,'pathfinder':_pathfinder,'cthulhu':_cthulhu,'cyberpunk':_cyberpunk,'vampire':_vampire,'bg3':_bg3,'divinity':_divinity,'skyrim':_skyrim,'elden':_elden,'fallout':_fallout,'warhammer':_warhammer,'starfinder':_starfinder,'shadowrun':_shadowrun,'dragonage':_dragonage,'wow':_wow,'diablo':_diablo}
+def _disco(game, role, rng):
+    # Четыре атрибута и двенадцать очков, как упрощённый учебный билд.
+    values=[1,2,4,5]
+    rng.shuffle(values)
+    priorities=_priority(game.stats,role)
+    if priorities:
+        target=game.stats.index(priorities[0])
+        best=values.index(max(values))
+        values[target],values[best]=values[best],values[target]
+    return dict(zip(game.stats,values))
+
+def _grimdawn(game, role, rng):
+    values={stat:rng.randint(35,65) for stat in game.stats}
+    for stat in _priority(game.stats,role): values[stat]+=rng.randint(10,19)
+    return values
+
+def _lastepoch(game, role, rng):
+    values={stat:rng.randint(8,18) for stat in game.stats}
+    focus={'Страж':'Сила','Маг':'Интеллект','Первобытный':'Сродство',
+           'Послушник':'Интеллект','Разбойник':'Ловкость'}[role]
+    values[focus]+=rng.randint(7,15)
+    return values
+
+def _diablo2(game, role, rng):
+    values={'Сила':rng.randint(20,40),'Ловкость':rng.randint(20,35),
+            'Живучесть':rng.randint(20,40),'Энергия':rng.randint(20,35)}
+    focus={'Амазонка':'Ловкость','Варвар':'Сила','Некромант':'Энергия',
+           'Паладин':'Живучесть','Чародейка':'Энергия','Друид':'Энергия','Ассасин':'Ловкость'}[role]
+    values[focus]+=rng.randint(12,26)
+    return values
+
+def _poe(game, role, rng):
+    values={'Сила':rng.randint(14,27),'Ловкость':rng.randint(14,27),'Интеллект':rng.randint(14,27)}
+    for stat in _priority(game.stats,role): values[stat]+=rng.randint(10,22)
+    return values
+
+def _titanquest(game, role, rng):
+    values={'Сила':rng.randint(40,60),'Ловкость':rng.randint(40,60),
+            'Интеллект':rng.randint(40,60),'Здоровье':rng.randint(100,140),
+            'Энергия':rng.randint(60,90)}
+    for stat in _priority(game.stats,role): values[stat]+=rng.randint(12,25)
+    return values
+
+STRATEGIES = {'dnd':_dnd,'pathfinder':_pathfinder,'cthulhu':_cthulhu,'cyberpunk':_cyberpunk,'vampire':_vampire,'warhammer':_warhammer,'starfinder':_starfinder,'shadowrun':_shadowrun,'darkest':_darkest,'battlebrothers':_battlebrothers,'disco':_disco,'grimdawn':_grimdawn,'lastepoch':_lastepoch,'diablo2':_diablo2,'poe':_poe,'titanquest':_titanquest}
 
 def generate(slug, origin=None, role=None, *, seed=None, level=1):
     game=BY_SLUG.get(slug)
